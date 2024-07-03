@@ -13,8 +13,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', { username, password });
-      localStorage.setItem('token', response.data.token);
+      const response = await axios.post('http://localhost:3000/api/auth/login', { username, password });
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role);
       navigate('/dashboard');
     } catch (err) {
       setError('Invalid credentials');

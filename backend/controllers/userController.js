@@ -68,32 +68,12 @@ async function deleteUser(req, res) {
 }
 
 
-async function login(req, res) {
-  const { username, password } = req.body;
 
-  try {
-    const user = await userService.getUserByUsername(username);
-    if (!user) {
-      return res.status(401).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
-    }
-
-    const token = jwt.sign({ id: user.id_User }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ user: { id: user.id, username: user.username, sector: user.sector, role: user.role }, token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
 
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   updateUser,
-  deleteUser,
-  login
+  deleteUser
 };
