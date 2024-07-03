@@ -1,0 +1,12 @@
+const { noTrueLogging } = require('sequelize/lib/utils/deprecations');
+const { sequelize } = require('./backend/database/index');
+
+module.exports = async function syncDatabase() {
+  try {
+    await sequelize.sync({ alter: true }); // Utilisez { force: true } si vous voulez recréer les tables
+    console.log('Modèles Sequelize synchronisés');
+  } catch (err) {
+    console.error('Erreur lors de la synchronisation des modèles :', err);
+    throw err;
+  }
+};
