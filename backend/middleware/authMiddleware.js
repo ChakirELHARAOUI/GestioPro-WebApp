@@ -16,10 +16,8 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'Token manquant' });
     }
 
-    console.log('Token reçu:', token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Token décodé:', decoded);
 
     const user = await User.findByPk(decoded.id);
     console.log('Utilisateur trouvé:', user);
@@ -31,7 +29,6 @@ const authMiddleware = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.error('Erreur d\'authentification:', error);
     res.status(401).json({ message: 'Non autorisé' });
   }
 };
@@ -40,7 +37,7 @@ const authMiddleware = async (req, res, next) => {
 const roleMiddleware = (allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Accès interdit. Rôle insuffisant.' });
+      return res.status(403).json({ message: 'Access denied !!' });
     }
     next();
   };

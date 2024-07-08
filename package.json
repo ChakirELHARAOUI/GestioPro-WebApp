@@ -2,7 +2,7 @@
   "name": "projet-application-web",
   "version": "1.0.0",
   "description": "Application pour un client pour une optimisation de la gestion des vendeurs et des commandes",
-  "main": "backend/app.js",
+  "main": "backend/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
