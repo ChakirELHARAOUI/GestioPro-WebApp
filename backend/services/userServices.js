@@ -69,9 +69,15 @@ async function updateUser(userId, updateData){
   }
 }
 
-async function getUserByUsername(username) {
-  return await User.findOne({ where: { username } });
+async function deleteUser(id) {
+  const user = await User.findByPk(id);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user.destroy();
 }
+
+
 
 module.exports = {
   createUser,

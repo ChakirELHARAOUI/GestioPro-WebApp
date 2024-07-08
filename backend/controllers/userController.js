@@ -20,7 +20,7 @@ async function createUser(req, res) {
 
 async function getUsers(req, res) {
   try {
-    const users = await userService.getUsers();
+    const users = await userService.getAllUsers();
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -31,7 +31,7 @@ async function getUserById(req, res) {
   const userId = req.params.id;
 
   try {
-    const user = await userService.getUserById(userId);
+    const user = await userService.findUserById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé.' });
     }

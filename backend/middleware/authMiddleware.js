@@ -20,10 +20,9 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findByPk(decoded.id);
-    console.log('Utilisateur trouvé:', user);
 
     if (!user) {
-      return res.status(401).json({ message: 'Utilisateur non trouvé' });
+      return res.status(401).json({ message: ' Middleware : Utilisateur non trouvé' });
     }
 
     req.user = user;

@@ -7,9 +7,32 @@ const jwt = require('jsonwebtoken');
 
 class UserService {
   async createUser(userData) {
-    const { username, password, sector, role } = userData;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return User.create({ username, password: hashedPassword, sector, role });
+
+    try{
+      
+      // On vérifie que l'Utilisateur n'existe  pas déjà dans la base de données
+      const existingUser = await User.findOne({ 
+        where: { username: userData.username }
+      });
+      if (existingUser) {
+        throw new Error('Cet utilisateur existe déjà');
+      }
+      
+      // Hasher le mot de passe
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+      const user = new User({
+        ...userData,
+        password: hashedPassword
+    });
+
+    await user.save();
+    return { success: true, message: 'Utilisateur créé avec succès' };
+
+    }catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 
   async findUserByUsername(username) {
