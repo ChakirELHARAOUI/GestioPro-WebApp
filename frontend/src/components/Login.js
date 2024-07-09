@@ -1,11 +1,11 @@
 // src/components/Login.js
 
-// src/components/Login.js
+
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { jwtDecode } from 'jwt-decode';
+import api from '../api/axios';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', { username, password });
+      const response = await api.post('/api/auth/login', { username, password });
       const { token } = response.data;
       localStorage.setItem('token', token);
       

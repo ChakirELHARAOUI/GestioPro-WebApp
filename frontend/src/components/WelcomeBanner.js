@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './WelcomeBanner.css'; // Nous garderons ce fichier pour des styles personnalisés si nécessaire
-import logo from '../assets/logo.png'; // Assurez-vous que le chemin est correct
+import './WelcomeBanner.css'; 
+import logo from '../assets/logo.png'; 
 
 const WelcomeBanner = () => {
   return (

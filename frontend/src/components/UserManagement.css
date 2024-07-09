@@ -1,0 +1,69 @@
+.user-management-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .user-management-title {
+    color: #007bff;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .create-user-btn {
+    margin-bottom: 20px;
+  }
+  
+  .user-table {
+    background-color: white;
+  }
+  
+  .user-table th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .user-actions {
+    white-space: nowrap;
+  }
+  
+  .user-actions button {
+    margin-right: 5px;
+  }
+  
+  .role-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+  
+  .role-manager {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .role-vendeur {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .table-responsive {
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .user-actions button {
+      margin-bottom: 5px;
+      width: 100%;
+    }
+  }
+  

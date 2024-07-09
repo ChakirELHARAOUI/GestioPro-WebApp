@@ -1,8 +1,8 @@
-// frontend/src/components/UserManagement.js
-
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Modal, Form, Alert } from 'react-bootstrap';
-import axios from 'axios';
+import { Table, Button, Modal, Form, Alert, Container, Row, Col, Card } from 'react-bootstrap';
+import api from '../api/axios';
+import './UserManagement.css';
+
 
 const UserManagement = ({ userRole, userId }) => {
   const [users, setUsers] = useState([]);
@@ -14,11 +14,11 @@ const UserManagement = ({ userRole, userId }) => {
     try {
       let response;
       if (userRole === 1) {
-        response = await axios.get('/api/users');
+        response = await api.get('/api/users/getUsers');
       } else {
-        response = await axios.get(`/api/users/${userId}`);
+        response = await api.get(`/api/users/getUser/${userId}`);
       }
-      setUsers(userRole === 1 ? response.data : [response.data]);
+      setUsers(Array.isArray(response.data.users) ? response.data.users : [response.data.users]);
     } catch (err) {
       setError('Erreur lors de la récupération des utilisateurs');
     }
@@ -38,10 +38,10 @@ const UserManagement = ({ userRole, userId }) => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id_User) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       try {
-        await axios.delete(`/api/users/${id}`);
+        await api.delete(`/api/users/${id_User}`);
         fetchUsers();
       } catch (err) {
         setError('Erreur lors de la suppression de l\'utilisateur');
@@ -52,10 +52,10 @@ const UserManagement = ({ userRole, userId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (currentUser.id) {
-        await axios.put(`/api/users/${currentUser.id}`, currentUser);
+      if (currentUser.id_User) {
+        await api.put(`/api/users/${currentUser.id_User}`, currentUser);
       } else {
-        await axios.post('/api/users', currentUser);
+        await api.post('/api/users', currentUser);
       }
       setShowModal(false);
       fetchUsers();
@@ -69,49 +69,55 @@ const UserManagement = ({ userRole, userId }) => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Gestion des Utilisateurs</h2>
+    <div className="user-management-container">
+      <h2 className="user-management-title">Gestion des Utilisateurs</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {userRole === 1 && (
-        <Button variant="primary" onClick={handleCreate} className="mb-3">
-          Créer un nouvel utilisateur
+        <Button variant="primary" onClick={handleCreate} className="create-user-btn">
+          <i className="bi bi-plus-circle me-2"></i>Créer un nouvel utilisateur
         </Button>
       )}
-      <Table responsive striped bordered hover>
-        <thead>
-          <tr>
-            <th>Nom d'utilisateur</th>
-            <th>Rôle</th>
-            {userRole === 1 && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{getRoleName(user.role)}</td>
-              {userRole === 1 && (
-                <td>
-                  <Button variant="info" size="sm" onClick={() => handleEdit(user)} className="mr-2">
-                    Éditer
-                  </Button>
-                  <Button variant="danger" size="sm" onClick={() => handleDelete(user.id)}>
-                    Supprimer
-                  </Button>
-                </td>
-              )}
+      <div className="table-responsive">
+        <Table hover bordered className="user-table">
+          <thead>
+            <tr>
+              <th>Nom d'utilisateur</th>
+              <th>Rôle</th>
+              {userRole === 1 && <th>Actions</th>}
             </tr>
-          ))}
-        </tbody>
-      </Table>
-
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id_User}>
+                <td>{user.username}</td>
+                <td>
+                  <span className={`role-badge ${user.role === 1 ? 'role-manager' : 'role-vendeur'}`}>
+                    {getRoleName(user.role)}
+                  </span>
+                </td>
+                {userRole === 1 && (
+                  <td className="user-actions">
+                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(user)}>
+                      <i className="bi bi-pencil"></i> Éditer
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(user.id_User)}>
+                      <i className="bi bi-trash"></i> Supprimer
+                    </Button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+  
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentUser.id ? 'Éditer' : 'Créer'} un utilisateur</Modal.Title>
+          <Modal.Title>{currentUser.id_User ? 'Éditer' : 'Créer'} un utilisateur</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Nom d'utilisateur</Form.Label>
               <Form.Control
                 type="text"
@@ -120,10 +126,9 @@ const UserManagement = ({ userRole, userId }) => {
                 required
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Rôle</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 value={currentUser.role || ''}
                 onChange={(e) => setCurrentUser({ ...currentUser, role: parseInt(e.target.value) })}
                 required
@@ -131,10 +136,10 @@ const UserManagement = ({ userRole, userId }) => {
                 <option value="">Sélectionner un rôle</option>
                 <option value="1">Manager</option>
                 <option value="0">Vendeur</option>
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
-            {!currentUser.id && (
-              <Form.Group>
+            {!currentUser.id_User && (
+              <Form.Group className="mb-3">
                 <Form.Label>Mot de passe</Form.Label>
                 <Form.Control
                   type="password"
@@ -152,6 +157,4 @@ const UserManagement = ({ userRole, userId }) => {
     </div>
   );
 };
-
 export default UserManagement;
-
