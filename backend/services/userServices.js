@@ -1,16 +1,21 @@
 
-// backend/services/userService.js
+// database/services/userService.js
 
+const { User } = require('../database/index');
 const bcrypt = require('bcryptjs');
-const db = require('../database/index');
-const { User } = db;
+const jwt = require('jsonwebtoken');
 
-async function createUser (req, res){
+class UserService {
+  async createUser(userData) {
+
     try{
-
-      const existingUser = await User.findOne({ username: userData.username });
+      
+      // On vérifie que l'Utilisateur n'existe  pas déjà dans la base de données
+      const existingUser = await User.findOne({ 
+        where: { username: userData.username }
+      });
       if (existingUser) {
-        throw new Error('Un utilisateur avec cet email existe déjà');
+        throw new Error('Cet utilisateur existe déjà');
       }
       
       // Hasher le mot de passe
@@ -28,94 +33,78 @@ async function createUser (req, res){
     }catch (error) {
       return { success: false, message: error.message };
     }
-}
+  }
 
-async function getAllUsers(){
-    try {
-      const users = await User.findAll();
-      return { success: true, data: users };
-    } catch (error) {
-        return { success: false, message: error.message };
+  async findUserByUsername(username) {
+    return User.findOne({ where: { username } });
+  }
+
+  async findUserById(id) {
+    return User.findByPk(id);
+  }
+
+  async getAllUsers() {
+    return User.findAll({ attributes: { exclude: ['password'] } });
+  }
+
+  async updateUser(id, updateData) {
+
+    // On vérifie que l'Utilisateur n'existe  pas déjà dans la base de données
+    const existingUser = await User.findOne({ 
+      where: { username: updateData.username }
+    });
+    if (existingUser) {
+      throw new Error("Cet username est déjà utilisé par un autre utilisateur");
     }
-}
 
-async function getUserById(userID){
-  try {
-    const user = await User.findByPk(userID);
+    const user = await User.findByPk(id);
     if (!user) {
-        return { success: false, message: 'Utilisateur non trouvé' };
+      throw new Error('User not found');
     }
-    return { success: true, data: user };
-  } catch (error) {
-      return { success: false, message: error.message };
-  }
-}
-
-async function updateUser(userId, updateData){
-  try {
-    // Si le mot de passe est mis à jour, le hasher
     if (updateData.password) {
-        const salt = await bcrypt.genSalt(10);
-        updateData.password = await bcrypt.hash(updateData.password, salt);
+      updateData.password = await bcrypt.hash(updateData.password, 10);
     }
+    return user.update(updateData);
+  }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
-    if (!updatedUser) {
-        return { success: false, message: 'Utilisateur non trouvé' };
+  async deleteUser(id) {
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new Error('User not found');
     }
-    return { success: true, data: updatedUser, message: 'Utilisateur mis à jour avec succès' };
-  } catch (error) {
-      return { success: false, message: error.message };
+    return user.destroy();
+  }
+
+  //PAS ENCORE UTILISER
+  async authenticateUser(username, password) {
+    const user = await this.findUserByUsername(username);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error('Invalid password');
+    }
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+    return { user: { id: user.id, username: user.username, role: user.role }, token };
+  }
+
+  async changePassword(id, oldPassword, newPassword) {
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      throw new Error('Invalid old password');
+    }
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    return user.update({ password: hashedNewPassword });
   }
 }
 
-async function deleteUser(id) {
-  const user = await User.findByPk(id);
-  if (!user) {
-    throw new Error('User not found');
-  }
-  return user.destroy();
-}
-
-
-
-module.exports = {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser  
-}
-
-
-exports.updateUser = async (userId, updateData) => {
-    try {
-        // Si le mot de passe est mis à jour, le hasher
-        if (updateData.password) {
-            const salt = await bcrypt.genSalt(10);
-            updateData.password = await bcrypt.hash(updateData.password, salt);
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
-        if (!updatedUser) {
-            return { success: false, message: 'Utilisateur non trouvé' };
-        }
-        return { success: true, data: updatedUser, message: 'Utilisateur mis à jour avec succès' };
-    } catch (error) {
-        return { success: false, message: error.message };
-    }
-};
-
-exports.deleteUser = async (userId) => {
-    try {
-        const deletedUser = await User.findByIdAndDelete(userId);
-        if (!deletedUser) {
-            return { success: false, message: 'Utilisateur non trouvé' };
-        }
-        return { success: true, message: 'Utilisateur supprimé avec succès' };
-    } catch (error) {
-        return { success: false, message: error.message };
-    }
-};
-
-
+module.exports = new UserService();

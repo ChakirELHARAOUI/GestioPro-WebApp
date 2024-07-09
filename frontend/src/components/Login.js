@@ -1,8 +1,11 @@
 // src/components/Login.js
+
+// src/components/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png'; // Assurez-vous que le chemin est correct
+import logo from '../assets/logo.png';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -14,10 +17,15 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/api/auth/login', { username, password });
-      const { token, user } = response.data;
+      const { token } = response.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role);
-      navigate('/dashboard');
+      
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.role === 1) {
+        navigate('/manager');
+      } else if (decodedToken.role === 0) {
+        navigate('/vendeur');
+      }
     } catch (err) {
       setError('Invalid credentials');
     }

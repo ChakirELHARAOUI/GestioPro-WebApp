@@ -1,7 +1,7 @@
 // database/controllers/userController.js
 
 
-const userService = require('../services/userServices2');
+const userService = require('../services/userServices');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
