@@ -5,6 +5,10 @@ import { Routes, Route } from 'react-router-dom';
 import WelcomeBanner from './components/WelcomeBanner';
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
+import UserManagement from './components/user-management/UserManagement';
+import ProductManagement from './components/product-management/ProductManagement';
+import OrderManagement from './components/order-management/OrderManagement';
+import Profile from './components/profile/Profile';
 import PrivateRoute from './components/common/PrivateRoute';
 import Layout from './components/common/Layout';
 import './App.css';
@@ -19,6 +23,34 @@ function App() {
           <PrivateRoute>
             <Layout>
               <Dashboard />
+            </Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/user-management" element={
+          <PrivateRoute>
+            <Layout>
+              <UserManagement />
+            </Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/product-management" element={
+          <PrivateRoute>
+            <Layout>
+              <ProductManagement />
+            </Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/order-management" element={
+          <PrivateRoute>
+            <Layout>
+              <OrderManagement />
+            </Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/profile" element={
+          <PrivateRoute>
+            <Layout>
+              <Profile />
             </Layout>
           </PrivateRoute>
         } />

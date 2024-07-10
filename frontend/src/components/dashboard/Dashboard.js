@@ -1,5 +1,4 @@
-// frontend/src/components/dashboard/Dashboard.js
-
+// src/components/dashboard/Dashboard.js
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
@@ -23,20 +22,18 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          {/* Ajoutez des widgets ou des graphiques ici */}
-          {/* Vous pouvez conditionner l'affichage de certains éléments en fonction du rôle */}
-          {user.role === 1 && (
+      {user.role === 1 && (
+        <Row>
+          <Col>
             <Card>
               <Card.Body>
                 <Card.Title>Fonctionnalités de Manager</Card.Title>
                 {/* Ajoutez ici les fonctionnalités spécifiques aux managers */}
               </Card.Body>
             </Card>
-          )}
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };

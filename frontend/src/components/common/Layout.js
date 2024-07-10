@@ -1,19 +1,29 @@
 // src/components/common/Layout.js
-
 import React from 'react';
-import Sidebar from './Sidebar';
+import Header from './Header';
+import Footer from './Footer';
 import { useAuth } from '../../contexts/AuthContext';
+import { Container } from 'react-bootstrap';
+import './Layout.css';
 
 const Layout = ({ children }) => {
-  const { user } = useAuth();
-  console.log("Layout | user = ",user)
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
+
+  if (!user) {
+    return <div>Veuillez vous connecter</div>;
+  }
 
   return (
     <div className="layout">
-      <Sidebar userRole={user.role} />
-      <main className="main-content">
+      <Header />
+      <Container fluid className="main-content">
         {children}
-      </main>
+      </Container>
+      <Footer />
     </div>
   );
 };
