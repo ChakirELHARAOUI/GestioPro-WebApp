@@ -1,11 +1,12 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import UserManagement from './UserManagement';
 import './ManagerPage.css';
 
 const ManagerPage = () => {
   const { user } = useAuth();
+  console.log('ManagerPage | User = ', user);
 
   if (!user) {
     return (
@@ -33,7 +34,7 @@ const ManagerPage = () => {
       </Row>
       <Row>
         <Col>
-          <UserManagement userRole={user.role} userId={user.id} />
+          <UserManagement userRole={user.role}/>
         </Col>
       </Row>
     </Container>

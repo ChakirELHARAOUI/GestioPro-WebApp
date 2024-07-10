@@ -4,7 +4,8 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const authController = require('../controllers/authController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
+const { ROLES } = require('../../backend/constantes');
 
 // Configuration CORS spécifique pour les routes d'authentification
 const corsOptions = {
@@ -21,6 +22,6 @@ router.use(cors(corsOptions));
 router.post('/login', authController.login);
 
 // Route pour obtenir le profil de l'utilisateur connecté
-router.get('/profile', authMiddleware, authController.getUserProfile);
+router.get('/profile/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.VENDEUR]), authController.getUserProfile);
 
 module.exports = router;

@@ -1,9 +1,10 @@
-// src/components/PrivateRoute.js
+// src/components/common/PrivateRoute.js
+
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-const PrivateRoute = ({ requiredRole, children }) => {
+const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -17,10 +18,6 @@ const PrivateRoute = ({ requiredRole, children }) => {
       return <Navigate to="/login" replace />;
     }
 
-    if (decodedToken.role !== requiredRole) {
-      return <Navigate to="/" replace />;
-    }
-
     return children ? children : <Outlet />;
   } catch (error) {
     console.error("Erreur de décodage du token:", error);
@@ -30,5 +27,3 @@ const PrivateRoute = ({ requiredRole, children }) => {
 };
 
 export default PrivateRoute;
-
-

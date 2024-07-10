@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Modal, Form, Alert, Container, Row, Col, Card } from 'react-bootstrap';
-import api from '../api/axios';
+import { Table, Button, Modal, Form, Alert} from 'react-bootstrap';
+import api from '../../api/axios';
 import './UserManagement.css';
 
 
@@ -10,19 +10,21 @@ const UserManagement = ({ userRole, userId }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [error, setError] = useState('');
 
+  console.log('UserManagement | userRole = ', userRole);
+  console.log('UserManagement | userId = ', userId);
+  console.log('UserManagement | Users = ', users);
+
   const fetchUsers = useCallback(async () => {
     try {
       let response;
-      if (userRole === 1) {
+      if (userRole !== 0) {
         response = await api.get('/api/users/getUsers');
-      } else {
-        response = await api.get(`/api/users/getUser/${userId}`);
       }
       setUsers(Array.isArray(response.data.users) ? response.data.users : [response.data.users]);
     } catch (err) {
       setError('Erreur lors de la récupération des utilisateurs');
     }
-  }, [userRole, userId]);
+  }, [userRole]);
 
   useEffect(() => {
     fetchUsers();
@@ -41,7 +43,7 @@ const UserManagement = ({ userRole, userId }) => {
   const handleDelete = async (id_User) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       try {
-        await api.delete(`/api/users/${id_User}`);
+        await api.delete(`/api/users/deleteUser/${id_User}`);
         fetchUsers();
       } catch (err) {
         setError('Erreur lors de la suppression de l\'utilisateur');
@@ -53,16 +55,18 @@ const UserManagement = ({ userRole, userId }) => {
     e.preventDefault();
     try {
       if (currentUser.id_User) {
-        await api.put(`/api/users/${currentUser.id_User}`, currentUser);
+        await api.put(`/api/users/updateUser/${currentUser.id_User}`, currentUser);
       } else {
-        await api.post('/api/users', currentUser);
+        await api.post('/api/users/addUser', currentUser);
       }
       setShowModal(false);
       fetchUsers();
     } catch (err) {
-      setError('Erreur lors de la sauvegarde de l\'utilisateur');
+      console.error("Erreur lors de la sauvegarde de l'utilisateur:", err);
+      setError(`Erreur lors de la sauvegarde de l'utilisateur: ${err.message}`);
     }
   };
+  
 
   const getRoleName = (roleInt) => {
     return roleInt === 1 ? 'Manager' : 'Vendeur';
@@ -72,7 +76,7 @@ const UserManagement = ({ userRole, userId }) => {
     <div className="user-management-container">
       <h2 className="user-management-title">Gestion des Utilisateurs</h2>
       {error && <Alert variant="danger">{error}</Alert>}
-      {userRole === 1 && (
+      {userRole !== 0 && (
         <Button variant="primary" onClick={handleCreate} className="create-user-btn">
           <i className="bi bi-plus-circle me-2"></i>Créer un nouvel utilisateur
         </Button>
@@ -83,7 +87,7 @@ const UserManagement = ({ userRole, userId }) => {
             <tr>
               <th>Nom d'utilisateur</th>
               <th>Rôle</th>
-              {userRole === 1 && <th>Actions</th>}
+              {userRole !== 0 && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -95,7 +99,7 @@ const UserManagement = ({ userRole, userId }) => {
                     {getRoleName(user.role)}
                   </span>
                 </td>
-                {userRole === 1 && (
+                {userRole !== 0 && (
                   <td className="user-actions">
                     <Button variant="outline-info" size="sm" onClick={() => handleEdit(user)}>
                       <i className="bi bi-pencil"></i> Éditer

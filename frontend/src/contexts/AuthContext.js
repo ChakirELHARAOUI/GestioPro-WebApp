@@ -12,8 +12,11 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
+        console.log('AuthContext | decodedToken = ', decodedToken);
         setUser({
-          id: decodedToken.id,
+          id_User: decodedToken.id,
+          username : decodedToken.username,
+          sector : decodedToken.sector,
           role: decodedToken.role
         });
       } catch (error) {

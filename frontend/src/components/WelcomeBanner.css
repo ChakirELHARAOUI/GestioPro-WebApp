@@ -1,84 +1,68 @@
-.welcome-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #f0f2f5;
-  }
-  
-  .welcome-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .welcome-header h1 {
-    font-size: 24px;
-    color: #1a73e8;
-    margin: 0;
-  }
-  
-  .login-button {
-    text-decoration: none;
-    color: #1a73e8;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .login-button:hover {
-    background-color: #e8f0fe;
-  }
-  
-  .welcome-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 50px;
-  }
-  
-  .welcome-content h2 {
-    font-size: 36px;
-    color: #202124;
-    margin-bottom: 20px;
-  }
-  
-  .welcome-content p {
-    font-size: 18px;
-    color: #5f6368;
-    max-width: 600px;
-    margin-bottom: 30px;
-  }
-  
-  .cta-button {
-    display: inline-block;
-    background-color: #1a73e8;
-    color: white;
-    text-decoration: none;
-    padding: 12px 24px;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  
-  .cta-button:hover {
-    background-color: #1557b0;
-  }
-  
-  .logo-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 40px;
-    margin-right: 10px;
-  }
-  
+.welcome-banner {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.welcome-header h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 0;
+}
+
+.btn-login {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.welcome-content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.welcome-content h2 {
+  font-size: 36px;
+  color: #333;
+}
+
+.welcome-content p {
+  font-size: 18px;
+  color: #666;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-large {
+  font-size: 18px;
+  padding: 12px 24px;
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #0071e3;
+  color: white;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0077ed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

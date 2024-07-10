@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './WelcomeBanner.css'; 
-import logo from '../assets/logo.png'; 
+import './WelcomeBanner.css';
+import logo from '../assets/logo.png';
 
 const WelcomeBanner = () => {
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="welcome-banner d-flex flex-column min-vh-100">
       <header className="bg-light py-3">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center">
@@ -28,4 +28,4 @@ const WelcomeBanner = () => {
   );
 };
 
-export default WelcomeBanner;
+export default WelcomeBanner; 

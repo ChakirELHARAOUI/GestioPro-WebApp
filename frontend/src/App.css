@@ -1,25 +1,47 @@
 /* src/App.css */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f2f5;
+/* Reset de base */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-.container-fluid {
-  padding: 0;
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
 }
 
-.card {
-  border-radius: 8px;
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styles généraux */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 .btn-primary {
-  background-color: #1a73e8;
-  border-color: #1a73e8;
+  background-color: #007bff;
+  color: white;
 }
 
 .btn-primary:hover {
-  background-color: #1557b0;
-  border-color: #1557b0;
+  background-color: #0056b3;
 }

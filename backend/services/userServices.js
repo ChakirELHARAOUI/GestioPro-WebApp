@@ -49,18 +49,18 @@ class UserService {
 
   async updateUser(id, updateData) {
 
-    // On vérifie que l'Utilisateur n'existe  pas déjà dans la base de données
     const existingUser = await User.findOne({ 
       where: { username: updateData.username }
     });
-    if (existingUser) {
-      throw new Error("Cet username est déjà utilisé par un autre utilisateur");
-    }
-
+    
     const user = await User.findByPk(id);
     if (!user) {
       throw new Error('User not found');
     }
+    else if (existingUser.username !== user.username) {
+      throw new Error("Cet username est déjà utilisé par un autre utilisateur");
+    }
+
     if (updateData.password) {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
