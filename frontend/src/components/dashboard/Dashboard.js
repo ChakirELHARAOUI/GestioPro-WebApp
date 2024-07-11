@@ -11,9 +11,9 @@ const Dashboard = () => {
     <Container fluid className="dashboard-container">
       <Row className="mb-4">
         <Col>
-          <Card>
+          <Card className="dashboard-card">
             <Card.Body>
-              <Card.Title as="h1" className="mb-4">Tableau de bord</Card.Title>
+              <Card.Title as="h2" className="dashboard-title">Tableau de bord</Card.Title>
               <Card.Text>
                 Bienvenue sur le tableau de bord, {user.username}.
                 {user.role === 1 ? " Vous avez accès aux fonctionnalités de manager." : ""}
