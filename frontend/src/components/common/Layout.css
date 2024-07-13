@@ -20,7 +20,7 @@
   
   @media (min-width: 768px) {
     .main-content {
-      margin-left: 250px;
+      margin-left: 20px;
     }
   
     .sidebar.closed + .main-content {

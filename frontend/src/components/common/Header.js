@@ -1,6 +1,6 @@
 // src/components/common/Header.js
 import React, { useState } from 'react';
-import { Navbar, Nav, Container, NavDropdown, Offcanvas } from 'react-bootstrap';
+import { Nav, Container, NavDropdown, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import logo from '../../assets/logo.png';

@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <Container>
-        <p>&copy; 2024 VotreApp. Tous droits réservés.</p>
+        <p>&copy; 2024 GestioPro. Tous droits réservés.</p>
       </Container>
     </footer>
   );

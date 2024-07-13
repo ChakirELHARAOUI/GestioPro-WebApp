@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Modal, Form, Alert} from 'react-bootstrap';
+import { Table, Button, Modal, Form, Alert, OverlayTrigger, Tooltip, Container, Row, Col } from 'react-bootstrap';
 import api from '../../api/axios';
+import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import './UserManagement.css';
+
 
 
 const UserManagement = ({ userRole, userId }) => {
@@ -10,9 +12,6 @@ const UserManagement = ({ userRole, userId }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [error, setError] = useState('');
 
-  console.log('UserManagement | userRole = ', userRole);
-  console.log('UserManagement | userId = ', userId);
-  console.log('UserManagement | Users = ', users);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -36,7 +35,10 @@ const UserManagement = ({ userRole, userId }) => {
   };
 
   const handleEdit = (user) => {
-    setCurrentUser(user);
+    setCurrentUser({
+      ...user,
+      role: parseInt(user.role)
+    });
     setShowModal(true);
   };
 
@@ -54,10 +56,14 @@ const UserManagement = ({ userRole, userId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const userToSave = {
+        ...currentUser,
+        role: parseInt(currentUser.role)
+      };
       if (currentUser.id_User) {
-        await api.put(`/api/users/updateUser/${currentUser.id_User}`, currentUser);
+        await api.put(`/api/users/updateUser/${currentUser.id_User}`, userToSave);
       } else {
-        await api.post('/api/users/addUser', currentUser);
+        await api.post('/api/users/addUser', userToSave);
       }
       setShowModal(false);
       fetchUsers();
@@ -67,57 +73,84 @@ const UserManagement = ({ userRole, userId }) => {
     }
   };
   
+  
 
   const getRoleName = (roleInt) => {
     return roleInt === 1 ? 'Manager' : 'Vendeur';
   };
 
   return (
-    <div className="user-management-container">
-      <h2 className="user-management-title">Gestion des Utilisateurs</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {userRole !== 0 && (
-        <Button variant="primary" onClick={handleCreate} className="create-user-btn">
-          <i className="bi bi-plus-circle me-2"></i>Créer un nouvel utilisateur
-        </Button>
+    <Container fluid className="user-management-container py-4">
+      <Row className="justify-content-center">
+        <Col xs={12} lg={10} xl={8}>
+          <h2 className="user-management-title">Gestion des Utilisateurs</h2>
+        </Col>
+      </Row>
+      {error && (
+        <Row className="mb-4">
+          <Col>
+            <Alert variant="danger">{error}</Alert>
+          </Col>
+        </Row>
       )}
-      <div className="table-responsive">
-        <Table hover bordered className="user-table">
-          <thead>
-            <tr>
-              <th>Nom d'utilisateur</th>
-              <th>Rôle</th>
-              {userRole !== 0 && <th>Actions</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id_User}>
-                <td>{user.username}</td>
-                <td>
-                  <span className={`role-badge ${user.role === 1 ? 'role-manager' : 'role-vendeur'}`}>
-                    {getRoleName(user.role)}
-                  </span>
-                </td>
-                {userRole !== 0 && (
-                  <td className="user-actions">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(user)}>
-                      <i className="bi bi-pencil"></i> Éditer
-                    </Button>
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(user.id_User)}>
-                      <i className="bi bi-trash"></i> Supprimer
-                    </Button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+      {userRole !== 0 && (
+        <Row className="mb-4">
+          <Col>
+            <Button variant="primary" onClick={handleCreate} className="create-user-btn">
+              <FaPlus className="me-2" />Créer un nouvel utilisateur
+            </Button>
+          </Col>
+        </Row>
+      )}
+      <Row>
+        <Col>
+          <div className="table-responsive">
+            <Table hover className="user-table">
+              <thead>
+                <tr>
+                  <th>Nom d'utilisateur</th>
+                  <th>Secteur</th>
+                  <th>Rôle</th>
+                  {userRole !== 0 && <th className="text-center">Actions</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id_User}>
+                    <td>{user.username}</td>
+                    <td>{user.sector}</td>
+                    <td>
+                      <span className={`role-badge ${user.role === 1 ? 'role-manager' : 'role-vendeur'}`}>
+                        {getRoleName(user.role)}
+                      </span>
+                    </td>
+                    {userRole !== 0 && (
+                      <td>
+                        <div className="d-flex justify-content-center">
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Éditer</Tooltip>}>
+                            <Button variant="light" size="sm" onClick={() => handleEdit(user)} className="me-2 action-btn">
+                              <FaEdit />
+                            </Button>
+                          </OverlayTrigger>
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Supprimer</Tooltip>}>
+                            <Button variant="light" size="sm" onClick={() => handleDelete(user.id_User)} className="action-btn">
+                              <FaTrash />
+                            </Button>
+                          </OverlayTrigger>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Col>
+      </Row>
   
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentUser.id_User ? 'Éditer' : 'Créer'} un utilisateur</Modal.Title>
+          <Modal.Title>{currentUser.id_User ? 'Modifier' : 'Créer'} un utilisateur</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -131,9 +164,18 @@ const UserManagement = ({ userRole, userId }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
+              <Form.Label>Secteur</Form.Label>
+              <Form.Control
+                type="text"
+                value={currentUser.sector || ''}
+                onChange={(e) => setCurrentUser({ ...currentUser, sector: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Rôle</Form.Label>
               <Form.Select
-                value={currentUser.role || ''}
+                value={currentUser.role !== undefined ? currentUser.role.toString() : ''}
                 onChange={(e) => setCurrentUser({ ...currentUser, role: parseInt(e.target.value) })}
                 required
               >
@@ -158,7 +200,8 @@ const UserManagement = ({ userRole, userId }) => {
           </Form>
         </Modal.Body>
       </Modal>
-    </div>
+    </Container>
   );
 };
+
 export default UserManagement;
