@@ -2,28 +2,36 @@
 
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 const productBDDController = require('../controllers/productBDDController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, roleMiddleware } = require('../../backend/middleware/authMiddleware');
+const { ROLES } = require('../../backend/constantes');
 
-// Route pour obtenir tous les produits
-router.get('/', authMiddleware, productBDDController.getAllProducts);
+// Configuration CORS spécifique pour les routes d'utilisateurs
+const corsOptions = {
+    origin: 'http://localhost:3001',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
 
-// Route pour obtenir un produit spécifique par son ID
-router.get('/:id', authMiddleware, productBDDController.getProductById);
-
-// Route pour mettre à jour un produit
-router.put('/update', authMiddleware, productBDDController.updateProduct);
-
-// Route pour obtenir l'historique d'un produit
-router.get('/history/:id_produitBDD', authMiddleware, productBDDController.getProductHistory);
+// Appliquez CORS à toutes les routes d'utilisateurs
+router.use(cors(corsOptions));
 
 // Route pour créer un nouveau produit
-router.post('/create', authMiddleware, productBDDController.createProduct);
+router.post('/createProductBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]),productBDDController.createProduct);
+
+// Route pour obtenir tous les produits
+router.get('/getAllProductsBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER, ROLES.VENDEUR]), productBDDController.getAllProducts);
+// Route pour obtenir un produit spécifique par son ID
+router.get('/getProductBDD/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER, ROLES.VENDEUR]), productBDDController.getProductById);
+// Route pour obtenir l'historique d'un produit
+router.get('/getProductBDDHistory', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), productBDDController.getProductHistory);
+
+// Route pour mettre à jour un produit
+router.put('/updateProductBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), productBDDController.updateProduct);
 
 // Route pour supprimer un produit
-router.delete('/delete/:id', authMiddleware, productBDDController.deleteProduct);
-
-// Route pour obtenir les produits par secteur
-router.get('/sector/:sector', authMiddleware, productBDDController.getProductsBySector);
+router.delete('/deleteProductBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), productBDDController.deleteProduct);
 
 module.exports = router;

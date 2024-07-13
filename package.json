@@ -2,8 +2,9 @@
   "name": "projet-application-web",
   "version": "1.0.0",
   "description": "Application pour un client pour une optimisation de la gestion des vendeurs et des commandes",
-  "main": "backend/server.js",
+  "main": "./server.js",
   "scripts": {
+    "db:maintenance": "node ./backend/database/databaseMaitenance.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "me",

@@ -6,7 +6,7 @@ import WelcomeBanner from './components/WelcomeBanner';
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import UserManagement from './components/user-management/UserManagement';
-import ProductManagement from './components/product-management/ProductManagement';
+import ProductBDDManagement from './components/productBDD-management/ProductBDDManagement';
 import OrderManagement from './components/order-management/OrderManagement';
 import Profile from './components/profile/Profile';
 import PrivateRoute from './components/common/PrivateRoute';
@@ -36,7 +36,7 @@ function App() {
         <Route path="/product-management" element={
           <PrivateRoute>
             <Layout>
-              <ProductManagement />
+              <ProductBDDManagement />
             </Layout>
           </PrivateRoute>
         } />

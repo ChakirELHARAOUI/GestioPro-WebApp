@@ -35,6 +35,20 @@ class ProductBDDController {
     }
   }
 
+  async getProductHistory(req, res) {
+    const { id_produitBDD } = req.body;
+    try {
+      const result = await ProductBDDService.getProductBDDHistory(id_produitBDD);
+      return res.status(200).json(result);
+    } catch (error) {
+      if (error.message === 'Produit non trouvé') {
+        return res.status(404).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Erreur lors de la récupération de l'historique : ", error: error.message });
+    }
+  }
+  
+
   async updateProduct(req, res) {
     try {
       const updatedProduct = await ProductBDDService.updateProductBDD(req.body);
@@ -50,39 +64,15 @@ class ProductBDDController {
     }
   }
 
-  async getProductHistory(req, res) {
-    try {
-      const history = await ProductBDDService.getProductBDDHistory(req.params.id_produitBDD);
-      if (history.length > 0) {
-        res.json(history);
-      } else {
-        res.status(404).json({ message: 'No history found for this product' });
-      }
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
-
   async deleteProduct(req, res) {
+    const { id_produitBDD } = req.body;
+    console.log("ProductBDDController | id_produitBDD = ", id_produitBDD);
     try {
-      const result = await ProductBDDService.deleteProductBDD(req.params.id);
+      const result = await ProductBDDService.deleteProductBDD(id_produitBDD);
       if (result) {
         res.json({ message: 'Product deleted successfully' });
       } else {
         res.status(404).json({ message: 'Product not found' });
-      }
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
-
-  async getProductsBySector(req, res) {
-    try {
-      const products = await ProductBDDService.getProductsBySector(req.params.sector);
-      if (products.length > 0) {
-        res.json(products);
-      } else {
-        res.status(404).json({ message: 'No products found for this sector' });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
