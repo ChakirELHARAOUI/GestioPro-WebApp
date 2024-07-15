@@ -24,7 +24,7 @@ router.post('/createProductBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, RO
 // Route pour obtenir tous les produits
 router.get('/getAllProductsBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER, ROLES.VENDEUR]), productBDDController.getAllProducts);
 // Route pour obtenir un produit spécifique par son ID
-router.get('/getProductBDD/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER, ROLES.VENDEUR]), productBDDController.getProductById);
+router.get('/getProductBDD', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER, ROLES.VENDEUR]), productBDDController.getProductById);
 // Route pour obtenir l'historique d'un produit
 router.get('/getProductBDDHistory', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), productBDDController.getProductHistory);
 

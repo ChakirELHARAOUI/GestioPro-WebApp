@@ -1,0 +1,75 @@
+.product-management-container {
+    background-color: white;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.product-management-title {
+    color: #007bff;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.create-product-btn {
+    margin-bottom: 20px;
+}
+
+.product-table {
+    background-color: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.fournisseur-collaimo { background-color: #28a745 !important; }
+.fournisseur-oeufs { background-color: #ffa500 !important; }
+.fournisseur-jawda { background-color: #007bff !important; }
+.fournisseur-chergi { background-color: #dc3545 !important; }
+
+.product-collaimo { background-color: #28a74520 !important; }
+.product-oeufs { background-color: #ffa50020 !important; }
+.product-jawda { background-color: #007bff20 !important; }
+.product-chergi { background-color: #dc354520 !important; }
+
+.fournisseur-row {
+    font-weight: bold;
+    color: black;
+    padding: 10px;
+}
+
+.product-row {
+    transition: background-color 0.3s ease;
+}
+
+.product-row:hover {
+    filter: brightness(90%);
+}
+
+.action-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+@media (max-width: 768px) {
+    .action-btn {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}
+
+

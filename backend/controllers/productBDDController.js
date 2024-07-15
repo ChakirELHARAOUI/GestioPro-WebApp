@@ -23,8 +23,9 @@ class ProductBDDController {
   }
 
   async getProductById(req, res) {
+    const { id_produitBDD } = req.body
     try {
-      const product = await ProductBDDService.getProductBDDById(req.params.id);
+      const product = await ProductBDDService.getProductBDDById(id_produitBDD);
       if (product) {
         res.json(product);
       } else {

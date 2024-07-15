@@ -5,3 +5,7 @@
 -> Gestion Produits BDD (backend quasi fait | frontend)
 
 -> Gestion Commandes | Stocks | Recettes | Charges | Invendus etc..
+
+-> Changer dans api/axios.js ==> api/UserApi.js
+
+-> Regrouper les produitsBDD par fournisseur et avec la même couleur
