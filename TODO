@@ -1,11 +1,22 @@
--> Manager : Reset Mot de passe (backend / frontend)
--> Manager / Vendeur :  "/profil" | Acceder au profil de l'utilisateur (backend / frontend)
--> Manager / Vendeur :  "/profil" | Modifier le mot de passe de l'utilisateur
+Gestion ProduitBDD
+    -> Vérifier que les api envoyer par le frontend correspondent à ceux du backend
+    -> Verifier que le frontend focntionne correctement
+    -> Gérer la partie fournisseur dans la création d'un produitBDD
+    -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même manière
 
--> Gestion Produits BDD (backend quasi fait | frontend)
 
--> Gestion Commandes | Stocks | Recettes | Charges | Invendus etc..
+Gestion des commandeEntreprise (Manager)
+    -> Tester le backend
+    -> Faire la partie frontend
 
--> Changer dans api/axios.js ==> api/UserApi.js
 
--> Regrouper les produitsBDD par fournisseur et avec la même couleur
+Gestion des Users
+    -> Manager : Reset Mot de passe (backend / frontend)
+    -> Changer dans api/axios.js ==> api/UserApi.js
+
+
+Dashbord
+    -> Manager | Vendeur :  "/profil" | Acceder au profil de l'utilisateur (backend / frontend)
+    -> Manager | Vendeur :  "/profil" | Modifier le mot de passe de l'utilisateur
+    -> Frontend Manager != Frontend Vendeur (Gestion Permissions)
+ 

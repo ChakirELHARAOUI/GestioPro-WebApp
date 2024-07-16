@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./backend/routes/authRoutes');
 const userRoutes = require('./backend/routes/userRoutes');
 const productRoutes = require('./backend/routes/productBDDRoutes');
+const CommandeEntrepriseRoutes = require('./backend/routes/commandeEntrepriseRoutes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/commandeEntreprise', CommandeEntrepriseRoutes);
 
 // Exemple de route pour vérifier le fonctionnement du serveur
 app.get('/', (req, res) => {

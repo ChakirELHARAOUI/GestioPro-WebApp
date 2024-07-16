@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { jwtDecode } from "jwt-decode";
 import api from "../../api/axios";
 
 const Login = () => {
