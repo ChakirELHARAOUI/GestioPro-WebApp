@@ -1,15 +1,21 @@
-<!> Maitre au normes RestFul toutes les routes des requetes à la fois au frontend et au backend
-    -> Gestion des produits backend fait et tester
-    -> Gestion des Users
+<!> Important
+    -> Mettre au normes RestFul toutes les routes des requetes à la fois au frontend et au backend
+        <> Gestion des Users
+    -> Revoire le CRUD des modèle en fonction des relations, on a besoin de créer d'autres modèles 
+        <> User et StockSecteur
+        <> CommandeEntreprise et commandeSecteur
+        ...
 
 
 Gestion des commandeEntreprise (Manager)
-    -> Tester le backend
-    -> Faire la partie frontend
+    -> Faire la partie frontend (Pas la priorité)
+
+Gestion des commandeSecteur
+    -> Backend et Frontend
 
 
 Gestion des Users
-    -> Manager : Reset Mot de passe (backend / frontend)
+    -> Manager : Reset Mot de passe des vendeurs (backend / frontend)
     -> Changer dans api/axios.js ==> api/UserApi.js
 
 

@@ -50,12 +50,12 @@ const ProductBDDManagement = () => {
       }
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (currentProduct.id_produitBDD) {
-        await updateProduct(currentProduct);
+        await updateProduct(currentProduct.id_produitBDD, currentProduct);
       } else {
         await createProduct(currentProduct);
       }
@@ -93,14 +93,6 @@ const ProductBDDManagement = () => {
           </thead>
           <tbody>
             {Object.entries(groupedProducts).map(([fournisseur, fournisseurProducts]) => {
-              const fournisseurClass = `fournisseur-${fournisseur.toLowerCase()}`;
-              const productClass = `product-${fournisseur.toLowerCase()}`;
-
-              // Log to check class names
-              console.log(`Fournisseur: fournisseur-${fournisseur}`);
-              console.log(`Fournisseur: ${fournisseur}, Class: ${fournisseurClass}`);
-              console.log(`Product Class: ${productClass}`);
-
               return (
                 <React.Fragment key={fournisseur}>
                   <tr style={{ backgroundColor: fournisseurColors[fournisseur.toLowerCase()] }}

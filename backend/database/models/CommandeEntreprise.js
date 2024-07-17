@@ -12,10 +12,12 @@ module.exports = (sequelize) => {
     dateDepart: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW, 
     },
     etat: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue : true
     }
   }, {
     tableName: 'CommandeEntreprises',
@@ -24,4 +26,3 @@ module.exports = (sequelize) => {
 
   return CommandeEntreprise;
 };
-
