@@ -1,8 +1,6 @@
-Gestion ProduitBDD
-    -> Vérifier que les api envoyer par le frontend correspondent à ceux du backend
-    -> Verifier que le frontend focntionne correctement
-    -> Gérer la partie fournisseur dans la création d'un produitBDD
-    -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même manière
+<!> Maitre au normes RestFul toutes les routes des requetes à la fois au frontend et au backend
+    -> Gestion des produits backend fait mais à tester
+    -> Gestion des Users
 
 
 Gestion des commandeEntreprise (Manager)
@@ -19,4 +17,10 @@ Dashbord
     -> Manager | Vendeur :  "/profil" | Acceder au profil de l'utilisateur (backend / frontend)
     -> Manager | Vendeur :  "/profil" | Modifier le mot de passe de l'utilisateur
     -> Frontend Manager != Frontend Vendeur (Gestion Permissions)
+
+
+Gestion ProduitBDD
+    -> (OPTIONNEL) Gérer la partie fournisseur dans la création d'un produitBDD
+    (Il faut mettre une sorte de menu déroulant qui sont tirés d'une liste et une section om l'on peut ajouter un fournisseur à la liste)
+    -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même manière
  

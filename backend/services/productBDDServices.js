@@ -57,53 +57,34 @@ class ProductBDDService {
   
 
   async updateProductBDD(productData) {
-    const { id_produitBDD, newFournisseur, newPrixVenteUnite } = productData;
+    const { id_produitBDD, name, fournisseur, prixVenteUnite } = productData;
+    
     const product = await db.ProductBDD.findByPk(id_produitBDD);
-  
-    if (!product) {
-      throw new Error('Product not found');
-    }
-  
-    let isChanged = false;
-    let priceChanged = false;
+    if (!product) throw new Error('Product not found');
+    
     const changedFields = {};
-    let oldPrixVenteUnite = product.prixVenteUnite;
-
-    // Vérifier et mettre à jour le fournisseur si nécessaire
-    if (product.fournisseur !== newFournisseur) {
-      changedFields.fournisseur = newFournisseur;
-      isChanged = true;
-    }
-  
-    // Vérifier et mettre à jour le prix de vente unitaire si nécessaire
-    if (Math.abs(parseFloat(product.prixVenteUnite) - parseFloat(newPrixVenteUnite)) >= 0.01) {
-
-      changedFields.prixVenteUnite = newPrixVenteUnite;
-      isChanged = true;
-      priceChanged = true;
-    }
-  
-    // Si rien n'a changé, retourner un message spécifique
-    if (!isChanged) {
-      return { message: "Rien n'a été modifié" };
-    }
-  
-    // Créer une entrée dans l'historique si le prix a changé
-    if (priceChanged) {
+    if (name && product.name !== name) changedFields.name = name;
+    if (fournisseur && product.fournisseur !== fournisseur) changedFields.fournisseur = fournisseur;
+    
+    const newPrice = parseFloat(prixVenteUnite);
+    if (!isNaN(newPrice) && Math.abs(product.prixVenteUnite - newPrice) >= 0.01) {
+      changedFields.prixVenteUnite = newPrice;
       await db.ProductBDDHistory.create({
-        id_produitBDD: id_produitBDD,
-        prixVenteUnite: oldPrixVenteUnite,
+        id_produitBDD,
+        prixVenteUnite: product.prixVenteUnite,
         updatedAt: new Date()
       });
     }
-  
-    // Mettre à jour le produit avec les champs modifiés
+    
+    if (Object.keys(changedFields).length === 0) {
+      return { message: "Rien n'a été modifié" };
+    }
+    
     const updatedProduct = await product.update(changedFields);
-  
-    return {
-      product: updatedProduct
-    };
+    return { product: updatedProduct };
   }
+  
+  
   
 
   async deleteProductBDD(id) {

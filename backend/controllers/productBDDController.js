@@ -1,4 +1,4 @@
-// database/controllers/productBDDController.js
+// backend/controllers/productBDDController.js
 
 const ProductBDDService = require('../services/productBDDServices');
 
@@ -23,9 +23,9 @@ class ProductBDDController {
   }
 
   async getProductById(req, res) {
-    const { id_produitBDD } = req.body
+    const { id } = req.params;
     try {
-      const product = await ProductBDDService.getProductBDDById(id_produitBDD);
+      const product = await ProductBDDService.getProductBDDById(id);
       if (product) {
         res.json(product);
       } else {
@@ -37,26 +37,28 @@ class ProductBDDController {
   }
 
   async getProductHistory(req, res) {
-    const { id_produitBDD } = req.body;
+    const { id } = req.params;
     try {
-      const result = await ProductBDDService.getProductBDDHistory(id_produitBDD);
-      return res.status(200).json(result);
-    } catch (error) {
-      if (error.message === 'Produit non trouvé') {
-        return res.status(404).json({ message: error.message });
+      const result = await ProductBDDService.getProductBDDHistory(id);
+      if (result) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).json({ message: 'Product not found' });
       }
-      return res.status(500).json({ message: "Erreur lors de la récupération de l'historique : ", error: error.message });
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la récupération de l'historique : " + error.message });
     }
   }
-  
 
   async updateProduct(req, res) {
+    const { id } = req.params;
     try {
-      const updatedProduct = await ProductBDDService.updateProductBDD(req.body);
+      const updatedProduct = await ProductBDDService.updateProductBDD({ id_produitBDD: id, ...req.body });
       if (updatedProduct) {
         res.json({
-          message : "Product updated",
-          updatedProduct});
+          message: "Product updated",
+          updatedProduct
+        });
       } else {
         res.status(404).json({ message: 'Product not found' });
       }
@@ -66,10 +68,9 @@ class ProductBDDController {
   }
 
   async deleteProduct(req, res) {
-    const { id_produitBDD } = req.body;
-    console.log("ProductBDDController | id_produitBDD = ", id_produitBDD);
+    const { id } = req.params;
     try {
-      const result = await ProductBDDService.deleteProductBDD(id_produitBDD);
+      const result = await ProductBDDService.deleteProductBDD(id);
       if (result) {
         res.json({ message: 'Product deleted successfully' });
       } else {
@@ -82,6 +83,7 @@ class ProductBDDController {
 }
 
 module.exports = new ProductBDDController();
+
 
 
 /*

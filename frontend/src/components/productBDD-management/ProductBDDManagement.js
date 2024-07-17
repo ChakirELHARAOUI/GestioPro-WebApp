@@ -55,7 +55,7 @@ const ProductBDDManagement = () => {
     e.preventDefault();
     try {
       if (currentProduct.id_produitBDD) {
-        await updateProduct(currentProduct.id_produitBDD, currentProduct);
+        await updateProduct(currentProduct);
       } else {
         await createProduct(currentProduct);
       }
