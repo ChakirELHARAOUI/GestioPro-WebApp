@@ -4,11 +4,14 @@ const { Sequelize, DataTypes } = require('sequelize');
 const dbConfig = require('../config/config');
 const path = require('path');
 
-
 const sequelize = new Sequelize(dbConfig.development.database, dbConfig.development.username, dbConfig.development.password, {
     host: dbConfig.development.host,
     dialect: dbConfig.development.dialect,
-    logging : false
+    logging: (msg) => {
+        if (msg.includes('ERROR') || msg.includes('WARNING')) {
+          console.log(msg);
+        }
+    },
 });
 
 const db = {};
@@ -32,8 +35,6 @@ db.ChargeSecteur = importModel('ChargeSecteur');
 db.InvenduSecteur = importModel('InvenduSecteur');
 db.PerteSecteur = importModel('PerteSecteur');
 
-
-
 // Define the junction table for many-to-many relationship
 db.UserCommandeEntreprise = sequelize.define('UserCommandeEntreprise', {}, { timestamps: false });
 
@@ -41,19 +42,18 @@ db.UserCommandeEntreprise = sequelize.define('UserCommandeEntreprise', {}, { tim
 db.User.belongsToMany(db.CommandeEntreprise, { through: db.UserCommandeEntreprise, foreignKey: 'userId', otherKey: 'commandeEntrepriseId' });
 db.CommandeEntreprise.belongsToMany(db.User, { through: db.UserCommandeEntreprise, foreignKey: 'commandeEntrepriseId', otherKey: 'userId' });
 
-// Définition des associations
+// Définition des associations avec cascade
 
-db.User.hasMany(db.CommandeSecteur, { foreignKey: 'id_User' });
-db.User.hasOne(db.StockSecteur, { foreignKey: 'id_User' });
-db.User.hasMany(db.RecetteSecteur, { foreignKey: 'id_User' });
-db.User.hasMany(db.VersementSecteur, { foreignKey: 'id_User' });
-db.User.hasMany(db.ChargeSecteur, { foreignKey: 'id_User' });
-db.User.hasMany(db.InvenduSecteur, { foreignKey: 'id_User' });
-db.User.hasMany(db.PerteSecteur, { foreignKey: 'id_User' });
+db.User.hasMany(db.CommandeSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasOne(db.StockSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasMany(db.RecetteSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasMany(db.VersementSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasMany(db.ChargeSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasMany(db.InvenduSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
+db.User.hasMany(db.PerteSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
 
-
-db.ProductBDD.hasMany(db.Product, { foreignKey: 'id_produitBDD' });
-db.ProductBDD.hasMany(db.ProductBDDHistory, { foreignKey: 'id_produitBDD' });
+db.ProductBDD.hasMany(db.Product, { foreignKey: 'id_produitBDD', onDelete: 'CASCADE', hooks: true });
+db.ProductBDD.hasMany(db.ProductBDDHistory, { foreignKey: 'id_produitBDD', onDelete: 'CASCADE', hooks: true });
 
 db.Product.belongsTo(db.ProductBDD, { foreignKey: 'id_produitBDD' });
 db.Product.belongsTo(db.CommandeSecteur, { foreignKey: 'idCommandeSecteur' });
@@ -61,26 +61,24 @@ db.Product.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
 
 db.ProductBDDHistory.belongsTo(db.ProductBDD, { foreignKey: 'id_produitBDD' });
 
-db.CommandeEntreprise.hasMany(db.CommandeSecteur, { foreignKey: 'idCommandeEntreprise' });
+db.CommandeEntreprise.hasMany(db.CommandeSecteur, { foreignKey: 'idCommandeEntreprise', onDelete: 'CASCADE', hooks: true });
 
 db.CommandeSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.CommandeSecteur.belongsTo(db.CommandeEntreprise, { foreignKey: 'idCommandeEntreprise' });
 db.CommandeSecteur.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
-db.CommandeSecteur.hasOne(db.RecetteSecteur, { foreignKey: 'idCommandeSecteur' });
-db.CommandeSecteur.hasMany(db.Product, { foreignKey: 'idCommandeSecteur' });
-
+db.CommandeSecteur.hasOne(db.RecetteSecteur, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
+db.CommandeSecteur.hasMany(db.Product, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.StockSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
-db.StockSecteur.hasMany(db.CommandeSecteur, { foreignKey: 'idStockSecteur' });
-db.StockSecteur.hasMany(db.Product, { foreignKey: 'idStockSecteur' });
-
+db.StockSecteur.hasMany(db.CommandeSecteur, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });
+db.StockSecteur.hasMany(db.Product, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.RecetteSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.RecetteSecteur.belongsTo(db.CommandeSecteur, { foreignKey: 'idCommandeSecteur' });
-db.RecetteSecteur.hasOne(db.VersementSecteur, { foreignKey: 'idRecetteSecteur' });
-db.RecetteSecteur.hasMany(db.ChargeSecteur, { foreignKey: 'idRecetteSecteur' });
-db.RecetteSecteur.hasOne(db.InvenduSecteur, { foreignKey: 'idRecetteSecteur' });
-db.RecetteSecteur.hasOne(db.PerteSecteur, { foreignKey: 'idRecetteSecteur' });
+db.RecetteSecteur.hasOne(db.VersementSecteur, { foreignKey: 'idRecetteSecteur', onDelete: 'CASCADE', hooks: true });
+db.RecetteSecteur.hasMany(db.ChargeSecteur, { foreignKey: 'idRecetteSecteur', onDelete: 'CASCADE', hooks: true });
+db.RecetteSecteur.hasOne(db.InvenduSecteur, { foreignKey: 'idRecetteSecteur', onDelete: 'CASCADE', hooks: true });
+db.RecetteSecteur.hasOne(db.PerteSecteur, { foreignKey: 'idRecetteSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.VersementSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.VersementSecteur.belongsTo(db.RecetteSecteur, { foreignKey: 'idRecetteSecteur' });
@@ -96,5 +94,34 @@ db.PerteSecteur.belongsTo(db.RecetteSecteur, { foreignKey: 'idRecetteSecteur' })
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+
+// Hooks pour la création conjointe
+db.User.afterCreate(async (user, options) => {
+    if (!options.transaction) return;
+    try {
+      await db.StockSecteur.create({
+        id_User: user.id_User,
+        sector: user.sector, 
+        nombreCagette: 0,
+        credit: 0
+      }, { transaction: options.transaction });
+    } catch (error) {
+      console.error('Error creating StockSecteur:', error);
+      throw error; 
+    }
+  });
+  
+  
+  /*commandeEntreprise Hooks*/
+  
+  
+  db.RecetteSecteur.afterCreate(async (recetteSecteur, options) => {
+    if (!options.transaction) return;
+    await db.VersementSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+    await db.ChargeSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+    await db.InvenduSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+    await db.PerteSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+  });
 
 module.exports = db;

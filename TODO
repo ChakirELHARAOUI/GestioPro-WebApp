@@ -1,8 +1,5 @@
 <!> Important
-    -> Mettre au normes RestFul toutes les routes des requetes à la fois au frontend et au backend
-        <> Gestion des Users
     -> Revoire le CRUD des modèle en fonction des relations, on a besoin de créer d'autres modèles 
-        <> User et StockSecteur
         <> CommandeEntreprise et commandeSecteur
         ...
 
@@ -16,7 +13,6 @@ Gestion des commandeSecteur
 
 Gestion des Users
     -> Manager : Reset Mot de passe des vendeurs (backend / frontend)
-    -> Changer dans api/axios.js ==> api/UserApi.js
 
 
 Dashbord

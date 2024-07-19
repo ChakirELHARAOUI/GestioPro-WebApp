@@ -1,29 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Modal, Form, Alert, OverlayTrigger, Tooltip, Container, Row, Col } from 'react-bootstrap';
-import api from '../../api/axios';
+import { getAllUsers, createUser, updateUser, deleteUser } from '../../api/userApi';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import './UserManagement.css';
 
-
-
-const UserManagement = ({ userRole, userId }) => {
+const UserManagement = ({ userRole }) => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [error, setError] = useState('');
 
-
   const fetchUsers = useCallback(async () => {
     try {
-      let response;
-      if (userRole !== 0) {
-        response = await api.get('/api/users/getUsers');
-      }
-      setUsers(Array.isArray(response.data.users) ? response.data.users : [response.data.users]);
+      const response = await getAllUsers();
+      setUsers(response.data);
     } catch (err) {
       setError('Erreur lors de la récupération des utilisateurs');
     }
-  }, [userRole]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -45,7 +39,7 @@ const UserManagement = ({ userRole, userId }) => {
   const handleDelete = async (id_User) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       try {
-        await api.delete(`/api/users/deleteUser/${id_User}`);
+        await deleteUser(id_User);
         fetchUsers();
       } catch (err) {
         setError('Erreur lors de la suppression de l\'utilisateur');
@@ -61,9 +55,9 @@ const UserManagement = ({ userRole, userId }) => {
         role: parseInt(currentUser.role)
       };
       if (currentUser.id_User) {
-        await api.put(`/api/users/updateUser/${currentUser.id_User}`, userToSave);
+        await updateUser(currentUser.id_User, userToSave);
       } else {
-        await api.post('/api/users/addUser', userToSave);
+        await createUser(userToSave);
       }
       setShowModal(false);
       fetchUsers();
@@ -72,8 +66,6 @@ const UserManagement = ({ userRole, userId }) => {
       setError(`Erreur lors de la sauvegarde de l'utilisateur: ${err.message}`);
     }
   };
-  
-  
 
   const getRoleName = (roleInt) => {
     return roleInt === 1 ? 'Manager' : 'Vendeur';
@@ -147,7 +139,7 @@ const UserManagement = ({ userRole, userId }) => {
           </div>
         </Col>
       </Row>
-  
+
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{currentUser.id_User ? 'Modifier' : 'Créer'} un utilisateur</Modal.Title>

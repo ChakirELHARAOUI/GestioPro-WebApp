@@ -7,10 +7,14 @@ async function createUser(req, res) {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userService.createUser({ username, password: hashedPassword, sector, role });
-    res.status(201).json(user);
+    const result = await userService.createUser({ username, password: hashedPassword, sector, role });
+    if (result.success) {
+      res.status(201).json(result);
+    } else {
+      res.status(400).json(result);
+    }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 }
 
