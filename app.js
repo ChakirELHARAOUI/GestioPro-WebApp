@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const authRoutes = require('./backend/routes/authRoutes');
-const userRoutes = require('./backend/routes/userRoutes');
-const productRoutes = require('./backend/routes/productBDDRoutes');
-const CommandeEntrepriseRoutes = require('./backend/routes/commandeEntrepriseRoutes');
+const authRoutes = require('./backend/routes/authRoute');
+const userRoutes = require('./backend/routes/userRoute');
+const productRoutes = require('./backend/routes/productBDDRoute');
+const CommandeEntrepriseRoutes = require('./backend/routes/commEntreRoute');
 
 const app = express();
 

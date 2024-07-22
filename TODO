@@ -1,14 +1,15 @@
-<!> Important
-    -> Revoire le CRUD des modèle en fonction des relations, on a besoin de créer d'autres modèles 
-        <> CommandeEntreprise et commandeSecteur
-        ...
+<!> Urgent & Important
+    <> Revoir la hook afterCreate de commandeEntreprise puisque c'est le createCommandeEntreprise qui le fait et pas afterCreate
 
 
-Gestion des commandeEntreprise (Manager)
-    -> Faire la partie frontend (Pas la priorité)
-
-Gestion des commandeSecteur
+Gestion des commandes
+    -> Avant tout, il faut que lorsque je crée un CommandeEntreprise, il initialise les commandeSecteur de tout les vendeurs qui y sont ratachés
+    -> Ensuite, les vendeurs peuvent la modifier et la soumettre
+    -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier
     -> Backend et Frontend
+
+Gestion des commandeEntreprise (Manager) | Il s'engloble avec la gestion des commandes (DONC PRIORITE AU BACKEND CommandeSecteur)
+    -> Faire la partie frontend (Pas la priorité)
 
 
 Gestion des Users
@@ -22,7 +23,7 @@ Dashbord
 
 
 Gestion ProduitBDD
-    -> (OPTIONNEL) Gérer la partie fournisseur dans la création d'un produitBDD
+    -> (OPTIONNEL) Gérer la partie fournisseur dans la création d'un produitBDD ()
     (Il faut mettre une sorte de menu déroulant qui sont tirés d'une liste et une section om l'on peut ajouter un fournisseur à la liste)
-    -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même manière
+    -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même couleur
  

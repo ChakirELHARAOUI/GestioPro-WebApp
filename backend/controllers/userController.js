@@ -1,5 +1,5 @@
 // database/controllers/userController.js
-const userService = require('../services/userServices');
+const userService = require('../services/userService');
 const bcrypt = require('bcrypt');
 
 async function createUser(req, res) {

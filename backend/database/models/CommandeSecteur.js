@@ -12,14 +12,12 @@ module.exports = (sequelize) => {
     dateSoumission: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     etat: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    sector: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      defaultValue: 'initial',
     }
   }, {
     tableName: 'CommandeSecteurs',

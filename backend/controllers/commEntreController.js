@@ -1,8 +1,9 @@
-const commandeEntrepriseService = require('../services/commandeEntrepriseServices');
+const commandeEntrepriseService = require('../services/commEntreService');
 
 exports.createCommandeEntreprise = async (req, res) => {
+  const { commandeEntrepriseData, userIds } = req.body;
   try {
-    const commande = await commandeEntrepriseService.createCommandeEntreprise(req.body);
+    const commande = await commandeEntrepriseService.createCommandeEntreprise(commandeEntrepriseData, userIds);
     res.status(201).json(commande);
   } catch (error) {
     res.status(400).json({ message: error.message });

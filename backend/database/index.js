@@ -3,15 +3,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const dbConfig = require('../config/config');
 const path = require('path');
+const { getStockSecteurByUserId } = require('../utils');
 
 const sequelize = new Sequelize(dbConfig.development.database, dbConfig.development.username, dbConfig.development.password, {
     host: dbConfig.development.host,
     dialect: dbConfig.development.dialect,
-    logging: (msg) => {
-        if (msg.includes('ERROR') || msg.includes('WARNING')) {
-          console.log(msg);
-        }
-    },
+    logging: false
 });
 
 const db = {};
@@ -110,18 +107,52 @@ db.User.afterCreate(async (user, options) => {
       console.error('Error creating StockSecteur:', error);
       throw error; 
     }
-  });
+});
+
+
+
+db.CommandeEntreprise.afterCreate(async (commandeEntreprise, options) => {
+  if (!options.transaction) return;
+  console.log("Index | commandeEntreprise.Id : ",commandeEntreprise.idCommandeEntreprise);
+
+  try {
+    const userCommandeEntreprises = await db.UserCommandeEntreprise.findAll({
+      where: { commandeEntrepriseId: commandeEntreprise.idCommandeEntreprise },
+      attributes: ['userId'],
+      transaction: options.transaction
+    });
+    console.log("Index | userCommandeEntreprises : ",userCommandeEntreprises);
+
+    for (const userCommandeEntreprise of userCommandeEntreprises) {
+      const userId = userCommandeEntreprise.userId;
+      try {
+        const idStockSecteur = await getStockSecteurByUserId(db, userId);
+        console.log(`Created CommandeSecteur for user ${userId} with idStockSecteur: ${idStockSecteur}`);
+        await CommandeSecteur.create({
+          id_User: userId,
+          idCommandeEntreprise: commandeEntreprise.idCommandeEntreprise,
+          etat: 'initial',
+          idStockSecteur: idStockSecteur
+        }, { transaction: options.transaction });
+      } catch (error) {
+        console.error(`Error creating CommandeSecteur for user ${userId}:`, error);
+        throw error; // Relance l'erreur pour annuler la transaction
+      }
+    }
+  } catch (error) {
+    console.error('Error in CommandeEntreprise afterCreate hook:', error);
+    throw error; // Relance l'erreur pour annuler la transaction
+  }
+});
   
   
-  /*commandeEntreprise Hooks*/
   
-  
-  db.RecetteSecteur.afterCreate(async (recetteSecteur, options) => {
-    if (!options.transaction) return;
-    await db.VersementSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
-    await db.ChargeSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
-    await db.InvenduSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
-    await db.PerteSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
-  });
+db.RecetteSecteur.afterCreate(async (recetteSecteur, options) => {
+  if (!options.transaction) return;
+  await db.VersementSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+  await db.ChargeSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+  await db.InvenduSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+  await db.PerteSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
+});
 
 module.exports = db;

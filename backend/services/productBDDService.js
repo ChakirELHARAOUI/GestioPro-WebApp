@@ -1,4 +1,4 @@
-// backend/services/db.ProductBDDService.js
+// backend/services/productBDDService.js
 
 const db = require('../database/index');
 const { Op } = require('sequelize');
@@ -14,7 +14,7 @@ class ProductBDDService {
     });
   
     if (existingProduct) {
-      throw new Error('This porduct already exist');
+      throw new Error('This product already exists');
     }
   
     return db.ProductBDD.create(productData);
@@ -83,16 +83,13 @@ class ProductBDDService {
     const updatedProduct = await product.update(changedFields);
     return { product: updatedProduct };
   }
-  
-  
-  
 
   async deleteProductBDD(id) {
     const t = await db.sequelize.transaction();
     try {
       console.log(`Tentative de suppression du produit avec l'ID: ${id}`);
       const product = await db.ProductBDD.findByPk(id, { transaction: t });
-      console.log("ProductBDDServices | product = ", product);
+      console.log("ProductBDDService | product = ", product);
       if (!product) {
         console.log(`Produit avec l'ID ${id} non trouvé`);
         await t.rollback();
@@ -117,93 +114,6 @@ class ProductBDDService {
       throw error;
     }
   }
-  
-
-  
-
-  // Méthodes supplémentaires qui pourraient être utiles
-
-  async searchProducts(searchTerm) {
-    return db.ProductBDD.findAll({
-      where: {
-        [Op.or]: [
-          { name: { [Op.like]: `%${searchTerm}%` } },
-          { description: { [Op.like]: `%${searchTerm}%` } }
-        ]
-      }
-    });
-  }
-
-  async getProductsBySector(sector) {
-    return db.ProductBDD.findAll({
-      where: { sector }
-    });
-  }
-
-  async updateStock(id, quantity) {
-    const product = await db.ProductBDD.findByPk(id);
-    if (!product) {
-      throw new Error('Product not found');
-    }
-    return product.update({ stock: product.stock + quantity });
-  }
-
-  async getProductsWithLowStock(threshold) {
-    return db.ProductBDD.findAll({
-      where: {
-        stock: { [Op.lte]: threshold }
-      }
-    });
-  }
 }
 
 module.exports = new ProductBDDService();
-
-
-
-
-
-/*const db = require('../database/index');
-
-async function updatedb.ProductBDD(id_produitBDD, newPrixVenteUnite, newFournisseur) {
-  const product = await db.db.ProductBDD.findByPk(id_produitBDD);
-
-  if (product) {
-    // Check if price has changed
-    if (product.prixVenteUnite !== newPrixVenteUnite) {
-      // Create history entry
-      await db.db.ProductBDDHistory.create({
-        prixVenteUnite: product.prixVenteUnite,
-        id_produitBDD: product.id_produitBDD
-      });
-
-      // Update product price
-      product.prixVenteUnite = newPrixVenteUnite;
-    }
-
-    // Update supplier if it has changed
-    if (product.fournisseur !== newFournisseur) {
-      product.fournisseur = newFournisseur;
-    }
-
-    await product.save();
-  }
-}
-
-async function getProductPriceHistory(id_produitBDD) {
-  const history = await db.db.ProductBDDHistory.findAll({
-    where: { id_produitBDD },
-    order: [['createdAt', 'ASC']]
-  });
-
-  return history.map(entry => ({
-    date: entry.createdAt,
-    prixVenteUnite: entry.prixVenteUnite
-  }));
-
-
-  module.exports = {
-  updatedb.ProductBDD,
-  getProductPriceHistory
-};
-}*/

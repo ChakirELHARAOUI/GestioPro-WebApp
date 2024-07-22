@@ -4,8 +4,8 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const productBDDController = require('../controllers/productBDDController');
-const { authMiddleware, roleMiddleware } = require('../../backend/middleware/authMiddleware');
-const { ROLES } = require('../../backend/constantes');
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
+const { ROLES } = require('../constantes');
 
 const corsOptions = {
     origin: 'http://localhost:3001',

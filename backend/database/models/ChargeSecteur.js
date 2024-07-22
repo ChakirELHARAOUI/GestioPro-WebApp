@@ -24,6 +24,11 @@ module.exports = (sequelize) => {
     sector: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    status : {
+      type : DataTypes.STRING,
+      allowNull : false,
+      defaultValue : 'initial',
     }
   }, {
     tableName: 'ChargeSecteurs',

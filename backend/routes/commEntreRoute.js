@@ -2,9 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const commandeEntrepriseController = require('../controllers/commandeEntrepriseController');
-const { authMiddleware, roleMiddleware } = require('../../backend/middleware/authMiddleware');
-const { ROLES } = require('../../backend/constantes');
+const commandeEntrepriseController = require('../controllers/commEntreController');
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
+const { ROLES } = require('../constantes');
 
 router.post('/', authMiddleware, roleMiddleware([ROLES.MANAGER]),commandeEntrepriseController.createCommandeEntreprise);
 router.get('/', authMiddleware, roleMiddleware([ROLES.MANAGER, ROLES.VENDEUR]), commandeEntrepriseController.getAllCommandesEntreprise);

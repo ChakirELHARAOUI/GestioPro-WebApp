@@ -5,7 +5,7 @@ const router = express.Router();
 const cors = require('cors');
 const authController = require('../controllers/authController');
 const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
-const { ROLES } = require('../../backend/constantes');
+const { ROLES } = require('../constantes');
 
 // Configuration CORS spécifique pour les routes d'authentification
 const corsOptions = {
