@@ -1,0 +1,55 @@
+const commandeSecteurService = require('../services/commSectService');
+
+exports.createCommandeSecteur = async (req, res) => {
+  try {
+    const commandeSecteur = await commandeSecteurService.createCommandeSecteur(req.body);
+    res.status(201).json(commandeSecteur);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getAllCommandeSecteurs = async (req, res) => {
+  try {
+    const commandeSecteurs = await commandeSecteurService.getAllCommandeSecteurs();
+    res.json(commandeSecteurs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getCommandeSecteurById = async (req, res) => {
+  try {
+    const commandeSecteur = await commandeSecteurService.getCommandeSecteurById(req.params.id);
+    if (!commandeSecteur) {
+      return res.status(404).json({ message: 'CommandeSecteur not found' });
+    }
+    res.json(commandeSecteur);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateCommandeSecteur = async (req, res) => {
+  try {
+    const commandeSecteur = await commandeSecteurService.updateCommandeSecteur(req.params.id, req.body);
+    if (!commandeSecteur) {
+      return res.status(404).json({ message: 'CommandeSecteur not found' });
+    }
+    res.json(commandeSecteur);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteCommandeSecteur = async (req, res) => {
+  try {
+    const result = await commandeSecteurService.deleteCommandeSecteur(req.params.id);
+    if (!result) {
+      return res.status(404).json({ message: 'CommandeSecteur not found' });
+    }
+    res.json({ message: 'CommandeSecteur deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

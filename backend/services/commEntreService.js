@@ -1,28 +1,37 @@
 // backend/services/commandeEntrepriseService.js
 
 const db = require('../database/index');
-const { getStockSecteurByUserId } = require('../utils');
+
 
 exports.createCommandeEntreprise = async (commandeEntrepriseData, userIds) => {
   const transaction = await db.sequelize.transaction();
   try {
-    // Vérifiez que tous les utilisateurs ont un StockSecteur
-    for (const userId of userIds) {
-      try {
-        await getStockSecteurByUserId(db, userId);
-      } catch (error) {
-        throw new Error(`Cannot create CommandeEntreprise: ${error.message}`);
-      }
-    }
-
     // Créer la CommandeEntreprise
     const commandeEntreprise = await db.CommandeEntreprise.create(commandeEntrepriseData, { transaction });
 
     // Associer les utilisateurs à la CommandeEntreprise
     await commandeEntreprise.addUsers(userIds, { transaction });
 
-    // Les CommandeSecteur seront créées automatiquement par le hook afterCreate
+    // Initialiser les CommandeSecteur pour chaque utilisateur
+    for (const userId of userIds) {
+      const stockSecteur = await db.StockSecteur.findOne({
+        where: { id_User: userId },
+        transaction
+      });
 
+      if (!stockSecteur) {
+        throw new Error(`No StockSecteur found for user ${userId}`);
+      }
+
+      await db.CommandeSecteur.create({
+        id_User: userId,
+        idCommandeEntreprise: commandeEntreprise.idCommandeEntreprise,
+        etat: 'initial',
+        idStockSecteur: stockSecteur.idStockSecteur
+      }, { transaction });
+    }
+
+    // Si tout s'est bien passé, on valide la transaction
     await transaction.commit();
     return commandeEntreprise;
   } catch (error) {

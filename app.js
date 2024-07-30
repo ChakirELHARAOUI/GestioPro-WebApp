@@ -4,7 +4,7 @@ const authRoutes = require('./backend/routes/authRoute');
 const userRoutes = require('./backend/routes/userRoute');
 const productRoutes = require('./backend/routes/productBDDRoute');
 const CommandeEntrepriseRoutes = require('./backend/routes/commEntreRoute');
-
+const commandeSecteurRoutes = require('./backend/routes/commSectRoute');
 const app = express();
 
 // Configuration CORS globale
@@ -25,6 +25,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/commandeEntreprise', CommandeEntrepriseRoutes);
+app.use('/api/commande-secteur', commandeSecteurRoutes);
+
 
 // Exemple de route pour vérifier le fonctionnement du serveur
 app.get('/', (req, res) => {

@@ -1,5 +1,4 @@
 <!> Urgent & Important
-    <> Revoir la hook afterCreate de commandeEntreprise puisque c'est le createCommandeEntreprise qui le fait et pas afterCreate
 
 
 Gestion des commandes

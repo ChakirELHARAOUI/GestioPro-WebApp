@@ -1,43 +1,71 @@
 
 // database/services/userService.js
 
-const { User, StockSecteur, sequelize  } = require('../database/index');
+const { User, StockSecteur, sequelize} = require('../database/index');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const DEFAULT_USER_ID = 1;
 const DEFAULT_USERNAME = 'admin';
 
+
+async function hashPassword(password) {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+}
+
+async function isUsernameUnique(username, transaction) {
+  const existingUser = await User.findOne({
+    where: { username },
+    transaction
+  });
+  return !existingUser;
+}
+
+
+
+async function createUserInDB(userData, transaction) {
+  const { username, password, sector, role } = userData;
+  // Vérifier si le nom d'utilisateur est unique
+  const isUnique = await isUsernameUnique(username, transaction);
+  if (!isUnique) {
+    throw new Error('Ce nom d\'utilisateur est déjà utilisé');
+  }
+
+  const hashedPassword = await hashPassword(password);
+
+  return await User.create({
+    username,
+    password: hashedPassword,
+    sector,
+    role
+  }, { transaction });
+}
+
+async function createStockSecteurForUser(user, transaction) {
+  return await StockSecteur.create({
+    id_User: user.id_User,
+    sector: user.sector,
+    nombreCagette: 0,
+    credit: 0
+  }, { transaction });
+}
+
+
 class UserService {
   async createUser(userData) {
-    const transaction = await sequelize.transaction();
+      const transaction = await sequelize.transaction();
+      try {
+        const user = await createUserInDB(userData, transaction);
+        await createStockSecteurForUser(user, transaction);
 
-    try {
-      // Vérification de l'existence de l'utilisateur
-      const existingUser = await User.findOne({ 
-        where: { username: userData.username },
-        transaction
-      });
-      if (existingUser) {
-        throw new Error('Cet utilisateur existe déjà');
+        await transaction.commit();
+        return { success: true, message: 'Utilisateur et StockSecteur créés avec succès', user };
+      } catch (error) {
+        await transaction.rollback();
+        console.error('Error in createUser:', error);
+        return { success: false, message: error.message };
       }
-      
-      // Hasher le mot de passe
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-      // Création de l'utilisateur
-      const user = await User.create({ ...userData, password: hashedPassword}, { transaction });
-
-      // La création du StockSecteur est gérée par le hook afterCreate
-
-      await transaction.commit();
-      return { success: true, message: 'Utilisateur créé avec succès', user };
-    } catch (error) {
-      await transaction.rollback();
-      console.error('Error in createUser:', error);
-      return { success: false, message: error.message };
-    }
   }
 
   async findUserByUsername(username) {
