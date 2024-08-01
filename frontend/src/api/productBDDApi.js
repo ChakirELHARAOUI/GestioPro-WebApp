@@ -1,6 +1,6 @@
 import axios from './axios';
 
-const BASE_URL = 'api/products';
+const BASE_URL = 'api/productsBDD';
 
 export const createProduct = (productData) => axios.post(`${BASE_URL}`, productData);
 export const getAllProducts = () => axios.get(`${BASE_URL}`);

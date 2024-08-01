@@ -1,9 +1,10 @@
 <!> Urgent & Important
+    <> Quand je modifie un produitBDD par un nom qui existe déjà, il le modifie quand même
 
 
 Gestion des commandes
     -> Avant tout, il faut que lorsque je crée un CommandeEntreprise, il initialise les commandeSecteur de tout les vendeurs qui y sont ratachés
-    -> Ensuite, les vendeurs peuvent la modifier et la soumettre
+    -> Ensuite, les vendeurs peuvent la modifier (ajouter des produits) et la soumettre
     -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier
     -> Backend et Frontend
 
