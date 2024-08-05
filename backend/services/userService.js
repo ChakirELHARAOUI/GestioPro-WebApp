@@ -32,11 +32,9 @@ async function createUserInDB(userData, transaction) {
     throw new Error('Ce nom d\'utilisateur est déjà utilisé');
   }
 
-  const hashedPassword = await hashPassword(password);
-
   return await User.create({
     username,
-    password: hashedPassword,
+    password,
     sector,
     role
   }, { transaction });
@@ -82,20 +80,16 @@ class UserService {
 
   async updateUser(id, updateData) {
 
-    const existingUser = await User.findOne({ 
-      where: { username: updateData.username }
-    });
-    
     const user = await User.findByPk(id);
     if (!user) {
       throw new Error('User not found');
     }
-    else if (existingUser.username !== user.username) {
-      throw new Error("Cet username est déjà utilisé par un autre utilisateur");
-    }
 
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
+    const existingUser = await User.findOne({ 
+      where: { username: updateData.username }
+    });
+    if (existingUser && existingUser.username !== user.username) {
+      throw new Error("Cet username est déjà utilisé par un autre utilisateur");
     }
     return user.update(updateData);
   }

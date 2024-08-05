@@ -43,14 +43,10 @@ async function getUserById(req, res) {
 
 async function updateUser(req, res) {
   const userId = req.params.id;
-  const { username, password, sector, role } = req.body;
+  const { username,  sector, role } = req.body;
 
   try {
-    let updateData = { username, sector, role };
-    if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
-    }
-    const user = await userService.updateUser(userId, updateData);
+    const user = await userService.updateUser(userId, req.body);
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé.' });
     }

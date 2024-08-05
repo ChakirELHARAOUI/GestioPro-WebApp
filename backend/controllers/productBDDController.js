@@ -1,6 +1,6 @@
 // backend/controllers/productBDDController.js
 
-const ProductBDDService = require('../services/productBDDService2');
+const ProductBDDService = require('../services/productBDDService');
 
 class ProductBDDController {
 

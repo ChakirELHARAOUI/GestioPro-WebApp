@@ -61,6 +61,14 @@ class ProductBDDService {
     
     const product = await db.ProductBDD.findByPk(id_produitBDD);
     if (!product) throw new Error('Product not found');
+
+    const existingProduct = await db.ProductBDD.findOne({
+      where: { name: productData.name}
+    });
+    console.log(existingProduct);
+    if (existingProduct && existingProduct.id_produitBDD !== id_produitBDD) {
+      throw new Error('This product already exists');
+    }
     
     const changedFields = {};
     if (name && product.name !== name) changedFields.name = name;
