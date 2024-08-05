@@ -1,11 +1,15 @@
 <!> Urgent & Important
 
 
+
 Gestion des commandes
-    -> Avant tout, il faut que lorsque je crée un CommandeEntreprise, il initialise les commandeSecteur de tout les vendeurs qui y sont ratachés
-    -> Ensuite, les vendeurs peuvent la modifier (ajouter des produits) et la soumettre
-    -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier
-    -> Backend et Frontend
+    <>Entreprises
+        -> Possibilités de modifier les utilisateurs ratachés à la commandeEntreprise et par conséquent initialiser pour ceux qui n'ont pas la commandeSecteur à cette CommandeEntreprise  
+
+    <>Secteur
+        -> Ensuite, les vendeurs peuvent la modifier (ajouter des produits) et la soumettre
+        -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier
+        -> Backend et Frontend
 
 Gestion des commandeEntreprise (Manager) | Il s'engloble avec la gestion des commandes (DONC PRIORITE AU BACKEND CommandeSecteur)
     -> Faire la partie frontend (Pas la priorité)

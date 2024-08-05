@@ -1,14 +1,20 @@
 const commandeEntrepriseService = require('../services/commEntreService');
 
 exports.createCommandeEntreprise = async (req, res) => {
-  const { commandeEntrepriseData, userIds } = req.body;
   try {
-    const commande = await commandeEntrepriseService.createCommandeEntreprise(commandeEntrepriseData, userIds);
-    res.status(201).json(commande);
+    const { userIds, ...commandeEntrepriseData } = req.body;
+    
+    if (!commandeEntrepriseData.dateDepart || !userIds || userIds.length === 0) {
+      return res.status(400).json({ message: "dateDepart et userIds sont requis" });
+    }
+
+    const result = await commandeEntrepriseService.createCommandeEntreprise(commandeEntrepriseData, userIds);
+    res.status(201).json(result);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.getAllCommandesEntreprise = async (req, res) => {
   try {
@@ -33,15 +39,16 @@ exports.getCommandeEntreprise = async (req, res) => {
 
 exports.updateCommandeEntreprise = async (req, res) => {
   try {
-    const commande = await commandeEntrepriseService.updateCommandeEntreprise(req.params.id, req.body);
-    if (!commande) {
-      return res.status(404).json({ message: 'Commande non trouvée' });
-    }
-    res.json(commande);
+    const { id } = req.params;
+    const { userIds, ...updateData } = req.body;
+
+    const result = await commandeEntrepriseService.updateCommandeEntreprise(id, updateData, userIds);
+    res.json(result);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.deleteCommandeEntreprise = async (req, res) => {
   try {
