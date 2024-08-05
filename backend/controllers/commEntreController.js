@@ -4,8 +4,8 @@ exports.createCommandeEntreprise = async (req, res) => {
   try {
     const { userIds, ...commandeEntrepriseData } = req.body;
     
-    if (!commandeEntrepriseData.dateDepart || !userIds || userIds.length === 0) {
-      return res.status(400).json({ message: "dateDepart et userIds sont requis" });
+    if (!userIds || userIds.length === 0) {
+      return res.status(400).json({ message: "userIds est requis" });
     }
 
     const result = await commandeEntrepriseService.createCommandeEntreprise(commandeEntrepriseData, userIds);

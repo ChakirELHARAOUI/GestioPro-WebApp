@@ -4,7 +4,6 @@
 
 Gestion des commandes
     <>Entreprises
-        -> Possibilités de modifier les utilisateurs ratachés à la commandeEntreprise et par conséquent initialiser pour ceux qui n'ont pas la commandeSecteur à cette CommandeEntreprise  
 
     <>Secteur
         -> Ensuite, les vendeurs peuvent la modifier (ajouter des produits) et la soumettre

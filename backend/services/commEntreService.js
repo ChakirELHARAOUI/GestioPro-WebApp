@@ -90,8 +90,10 @@ const formatCommandeEntrepriseOutput = async (commande) => {
 exports.createCommandeEntreprise = async (commandeEntrepriseData, userIds) => {
   const transaction = await db.sequelize.transaction();
   try {
-    // Convertir la date de départ en objet Date
-    const dateDepart = moment(commandeEntrepriseData.dateDepart, 'D/MM/YYYY');
+    // Utiliser la date d'aujourd'hui si dateDepart n'est pas fournie
+    const dateDepart = commandeEntrepriseData.dateDepart 
+      ? moment(commandeEntrepriseData.dateDepart, 'D/MM/YYYY') 
+      : moment().startOf('day');
 
     // Vérifier si la date de départ est ultérieure à aujourd'hui
     if (dateDepart.isBefore(moment(), 'day')) {
