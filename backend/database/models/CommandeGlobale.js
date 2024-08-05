@@ -3,8 +3,8 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const CommandeEntreprise = sequelize.define('CommandeEntreprise', {
-    idCommandeEntreprise: {
+  const CommandeGlobale = sequelize.define('CommandeGlobale', {
+    idCommandeGlobale: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -20,9 +20,9 @@ module.exports = (sequelize) => {
       defaultValue : true
     }
   }, {
-    tableName: 'CommandeEntreprises',
+    tableName: 'CommandeGlobale',
     timestamps: true,
   });
 
-  return CommandeEntreprise;
+  return CommandeGlobale;
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const commandeSecteurController = require('../controllers/commSectController');
+const commandeSecteurController = require('../controllers/CommandeSecteurController');
 const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 const { ROLES } = require('../constantes');
 

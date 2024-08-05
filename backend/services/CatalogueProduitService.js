@@ -1,13 +1,12 @@
-// backend/services/productBDDService.js
+// backend/services/CatalogueProduitService.js
 
-const db = require('../database/index');
-const { Op } = require('sequelize');
+const {CatalogueProduit, CatalogueProduitHistory, sequelize} = require('../database/index');  //ProductBDD
 
-class ProductBDDService {
+class CatalogueProduitService {
 
-  async createProductBDD(productData) {
+  async createCatalogueProduit(productData) {
     // Vérifier si le produit existe déjà
-    const existingProduct = await db.ProductBDD.findOne({
+    const existingProduct = await CatalogueProduit.findOne({
       where: {
         name: productData.name,
       }
@@ -17,24 +16,24 @@ class ProductBDDService {
       throw new Error('This product already exists');
     }
   
-    return db.ProductBDD.create(productData);
+    return CatalogueProduit.create(productData);
   }
 
-  async getAllProductBDD() {
-    return db.ProductBDD.findAll();
+  async getAllCatalogueProduit() {
+    return CatalogueProduit.findAll();
   }
 
-  async getProductBDDById(id) {
-    return db.ProductBDD.findByPk(id);
+  async getCatalogueProduitById(id) {
+    return CatalogueProduit.findByPk(id);
   }
 
-  async getProductBDDHistory(id_produitBDD) {
-    const product = await db.ProductBDD.findByPk(id_produitBDD);
+  async getCatalogueProduitHistory(id_produitBDD) {
+    const product = await CatalogueProduit.findByPk(id_produitBDD);
     if (!product) {
       throw new Error('Produit non trouvé');
     }
   
-    const history = await db.ProductBDDHistory.findAll({
+    const history = await CatalogueProduitHistory.findAll({
       where: { id_produitBDD },
       order: [['updatedAt', 'DESC']]
     });
@@ -56,13 +55,13 @@ class ProductBDDService {
   }
   
 
-  async updateProductBDD(productData) {
+  async updateCatalogueProduit(productData) {
     const { id_produitBDD, name, fournisseur, prixVenteUnite } = productData;
     
-    const product = await db.ProductBDD.findByPk(id_produitBDD);
+    const product = await CatalogueProduit.findByPk(id_produitBDD);
     if (!product) throw new Error('Product not found');
 
-    const existingProduct = await db.ProductBDD.findOne({
+    const existingProduct = await CatalogueProduit.findOne({
       where: { name: productData.name}
     });
     console.log(existingProduct);
@@ -77,7 +76,7 @@ class ProductBDDService {
     const newPrice = parseFloat(prixVenteUnite);
     if (!isNaN(newPrice) && Math.abs(product.prixVenteUnite - newPrice) >= 0.01) {
       changedFields.prixVenteUnite = newPrice;
-      await db.ProductBDDHistory.create({
+      await CatalogueProduitHistory.create({
         id_produitBDD,
         prixVenteUnite: product.prixVenteUnite,
         updatedAt: new Date()
@@ -92,12 +91,12 @@ class ProductBDDService {
     return { product: updatedProduct };
   }
 
-  async deleteProductBDD(id) {
-    const t = await db.sequelize.transaction();
+  async deleteCatalogueProduit(id) {
+    const t = await sequelize.transaction();
     try {
       console.log(`Tentative de suppression du produit avec l'ID: ${id}`);
-      const product = await db.ProductBDD.findByPk(id, { transaction: t });
-      console.log("ProductBDDService | product = ", product);
+      const product = await CatalogueProduit.findByPk(id, { transaction: t });
+      console.log("CatalogueProduitService | product = ", product);
       if (!product) {
         console.log(`Produit avec l'ID ${id} non trouvé`);
         await t.rollback();
@@ -105,7 +104,7 @@ class ProductBDDService {
       }
       
       // Supprimer d'abord les enregistrements d'historique associés
-      await db.ProductBDDHistory.destroy({
+      await CatalogueProduitHistory.destroy({
         where: { id_produitBDD: id },
         transaction: t
       });
@@ -124,4 +123,4 @@ class ProductBDDService {
   }
 }
 
-module.exports = new ProductBDDService();
+module.exports = new CatalogueProduitService();

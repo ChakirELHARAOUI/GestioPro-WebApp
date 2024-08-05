@@ -1,12 +1,12 @@
-// backend/controllers/productBDDController.js
+// backend/controllers/CatalogueProduitController.js
 
-const ProductBDDService = require('../services/productBDDService');
+const CatalogueProduitService = require('../services/CatalogueProduitService');
 
-class ProductBDDController {
+class CatalogueProduitController {
 
   async createProduct(req, res) {
     try {
-      const newProduct = await ProductBDDService.createProductBDD(req.body);
+      const newProduct = await CatalogueProduitService.createCatalogueProduit(req.body);
       res.status(201).json(newProduct);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -15,7 +15,7 @@ class ProductBDDController {
 
   async getAllProducts(req, res) {
     try {
-      const products = await ProductBDDService.getAllProductBDD();
+      const products = await CatalogueProduitService.getAllCatalogueProduit();
       res.json(products);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -25,7 +25,7 @@ class ProductBDDController {
   async getProductById(req, res) {
     const { id } = req.params;
     try {
-      const product = await ProductBDDService.getProductBDDById(id);
+      const product = await CatalogueProduitService.getCatalogueProduitById(id);
       if (product) {
         res.json(product);
       } else {
@@ -39,7 +39,7 @@ class ProductBDDController {
   async getProductHistory(req, res) {
     const { id } = req.params;
     try {
-      const result = await ProductBDDService.getProductBDDHistory(id);
+      const result = await CatalogueProduitService.getCatalogueProduitHistory(id);
       if (result) {
         res.status(200).json(result);
       } else {
@@ -53,7 +53,7 @@ class ProductBDDController {
   async updateProduct(req, res) {
     const { id } = req.params;
     try {
-      const updatedProduct = await ProductBDDService.updateProductBDD({ id_produitBDD: id, ...req.body });
+      const updatedProduct = await CatalogueProduitService.updateCatalogueProduit({ id_produitBDD: id, ...req.body });
       if (updatedProduct) {
         res.json({
           message: "Product updated",
@@ -70,7 +70,7 @@ class ProductBDDController {
   async deleteProduct(req, res) {
     const { id } = req.params;
     try {
-      const result = await ProductBDDService.deleteProductBDD(id);
+      const result = await CatalogueProduitService.deleteCatalogueProduit(id);
       if (result) {
         res.json({ message: 'Product deleted successfully' });
       } else {
@@ -82,7 +82,7 @@ class ProductBDDController {
   }
 }
 
-module.exports = new ProductBDDController();
+module.exports = new CatalogueProduitController();
 
 
 

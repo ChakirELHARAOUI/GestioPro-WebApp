@@ -1,32 +1,32 @@
-// backend/services/commandeEntrepriseService.js
+// backend/services/CommandeGlobaleService.js
 
-const db = require('../database/index');
+const {User, CommandeGlobale, CommandeSecteur, StockSecteur, sequelize} = require('../database/index');  //CommandeGlobale
 const moment = require('moment');
 
 // Fonctions auxiliaires
 
-const createCommandeSecteur = async (userId, commandeEntrepriseId, stockSecteurId, transaction) => {
-  return await db.CommandeSecteur.create({
+const createCommandeSecteur = async (userId, CommandeGlobaleId, stockSecteurId, transaction) => {
+  return await CommandeSecteur.create({
     id_User: userId,
-    idCommandeEntreprise: commandeEntrepriseId,
+    idCommandeGlobale: CommandeGlobaleId,
     etat: 'initial',
     idStockSecteur: stockSecteurId
   }, { transaction });
 };
 
-const associateUsersToCommandeEntreprise = async (commandeEntreprise, userIds, transaction) => {
-  await commandeEntreprise.addUsers(userIds, { transaction });
+const associateUsersToCommandeGlobale = async (CommandeGlobale, userIds, transaction) => {
+  await CommandeGlobale.addUsers(userIds, { transaction });
 };
 
-const initializeCommandeSecteurs = async (commandeEntreprise, userIds, transaction) => {
+const initializeCommandeSecteurs = async (CommandeGlobale, userIds, transaction) => {
   for (const userId of userIds) {
     const stockSecteur = await findStockSecteur(userId, transaction);
-    await createCommandeSecteur(userId, commandeEntreprise.idCommandeEntreprise, stockSecteur.idStockSecteur, transaction);
+    await createCommandeSecteur(userId, CommandeGlobale.idCommandeGlobale, stockSecteur.idStockSecteur, transaction);
   }
 };
 
 const findStockSecteur = async (userId, transaction) => {
-  const stockSecteur = await db.StockSecteur.findOne({
+  const stockSecteur = await StockSecteur.findOne({
     where: { id_User: userId },
     transaction
   });
@@ -43,7 +43,7 @@ const associateNewUsersAndInitializeCommandeSecteurs = async (commande, userIds,
   const newUserIds = userIds.filter(userId => !currentUserIds.includes(userId));
 
   if (newUserIds.length > 0) {
-    await associateUsersToCommandeEntreprise(commande, newUserIds, transaction);
+    await associateUsersToCommandeGlobale(commande, newUserIds, transaction);
     await initializeCommandeSecteurs(commande, newUserIds, transaction);
   }
 };
@@ -54,28 +54,28 @@ const dissociateUsersAndDeleteCommandeSecteurs = async (commande, userIds, trans
 
   if (removedUserIds.length > 0) {
     await commande.removeUsers(removedUserIds, { transaction });
-    await db.CommandeSecteur.destroy({
+    await CommandeSecteur.destroy({
       where: {
         id_User: removedUserIds,
-        idCommandeEntreprise: commande.idCommandeEntreprise
+        idCommandeGlobale: commande.idCommandeGlobale
       },
       transaction
     });
   }
 };
 
-const findCommandeEntrepriseById = async (id) => {
-  const commande = await db.CommandeEntreprise.findByPk(id);
+const findCommandeGlobaleById = async (id) => {
+  const commande = await CommandeGlobale.findByPk(id);
   if (!commande) {
     throw new Error('Commande not found');
   }
   return commande;
 };
 
-const formatCommandeEntrepriseOutput = async (commande) => {
+const formatCommandeGlobaleOutput = async (commande) => {
   const users = await commande.getUsers();
   return {
-    idCommandeEntreprise: commande.idCommandeEntreprise,
+    idCommandeGlobale: commande.idCommandeGlobale,
     dateDepart: moment(commande.dateDepart).format('D/MM/YYYY'),
     etat: commande.etat,
     users: users.map(user => ({
@@ -87,12 +87,12 @@ const formatCommandeEntrepriseOutput = async (commande) => {
 
 // Fonctions exportées
 
-exports.createCommandeEntreprise = async (commandeEntrepriseData, userIds) => {
-  const transaction = await db.sequelize.transaction();
+exports.createCommandeGlobale = async (CommandeGlobaleData, userIds) => {
+  const transaction = await sequelize.transaction();
   try {
     // Utiliser la date d'aujourd'hui si dateDepart n'est pas fournie
-    const dateDepart = commandeEntrepriseData.dateDepart 
-      ? moment(commandeEntrepriseData.dateDepart, 'D/MM/YYYY') 
+    const dateDepart = CommandeGlobaleData.dateDepart 
+      ? moment(CommandeGlobaleData.dateDepart, 'D/MM/YYYY') 
       : moment().startOf('day');
 
     // Vérifier si la date de départ est ultérieure à aujourd'hui
@@ -100,18 +100,23 @@ exports.createCommandeEntreprise = async (commandeEntrepriseData, userIds) => {
       throw new Error("La date de départ ne peut pas être avant à la date d'aujourd'hui");
     }
 
-    const commandeEntreprise = await db.CommandeEntreprise.create({
-      ...commandeEntrepriseData,
+    console.log("Creating commandeGlobal ....");
+    const commandeGlobale = await CommandeGlobale.create({
+      ...CommandeGlobaleData,
       dateDepart: dateDepart.toDate()
     }, { transaction });
 
-    await associateUsersToCommandeEntreprise(commandeEntreprise, userIds, transaction);
-    await initializeCommandeSecteurs(commandeEntreprise, userIds, transaction);
+    console.log("CommandeGlobale Created ....");
+
+    console.log("Associating users to CommandeGlobale ....");
+    await associateUsersToCommandeGlobale(commandeGlobale, userIds, transaction);
+    console.log("Initializing CommandeSecteurs ....");
+    await initializeCommandeSecteurs(commandeGlobale, userIds, transaction);
     await transaction.commit();
-    return await formatCommandeEntrepriseOutput(commandeEntreprise);
+    return await formatCommandeGlobaleOutput(commandeGlobale);
   } catch (error) {
     await transaction.rollback();
-    console.error('Error creating CommandeEntreprise:', error);
+    console.error('Error creating CommandeGlobale:', error);
     throw error;
   }
 };
@@ -119,20 +124,20 @@ exports.createCommandeEntreprise = async (commandeEntrepriseData, userIds) => {
 
 
 exports.getAllCommandesEntreprise = async () => {
-  const commandes = await db.CommandeEntreprise.findAll({
+  const commandes = await CommandeGlobale.findAll({
     include: [{
-      model: db.User,
+      model: User,
       attributes: ['id_User', 'username'],
       through: { attributes: [] }
     }]
   });
-  return Promise.all(commandes.map(formatCommandeEntrepriseOutput));
+  return Promise.all(commandes.map(formatCommandeGlobaleOutput));
 };
 
-exports.getCommandeEntreprise = async (id) => {
-  const commande = await db.CommandeEntreprise.findByPk(id, {
+exports.getCommandeGlobale = async (id) => {
+  const commande = await CommandeGlobale.findByPk(id, {
     include: [{
-      model: db.User,
+      model: User,
       attributes: ['id_User', 'username'],
       through: { attributes: [] }
     }]
@@ -140,13 +145,13 @@ exports.getCommandeEntreprise = async (id) => {
   if (!commande) {
     throw new Error('Commande not found');
   }
-  return formatCommandeEntrepriseOutput(commande);
+  return formatCommandeGlobaleOutput(commande);
 };
 
-exports.updateCommandeEntreprise = async (id, updateData, userIds) => {
-  const transaction = await db.sequelize.transaction();
+exports.updateCommandeGlobale = async (id, updateData, userIds) => {
+  const transaction = await sequelize.transaction();
   try {
-    const commande = await findCommandeEntrepriseById(id);
+    const commande = await findCommandeGlobaleById(id);
 
     // Mise à jour des champs si fournis
     if (updateData.dateDepart) {
@@ -165,21 +170,21 @@ exports.updateCommandeEntreprise = async (id, updateData, userIds) => {
     }
 
     await transaction.commit();
-    return await formatCommandeEntrepriseOutput(commande);
+    return await formatCommandeGlobaleOutput(commande);
   } catch (error) {
     await transaction.rollback();
-    console.error('Error updating CommandeEntreprise:', error);
+    console.error('Error updating CommandeGlobale:', error);
     throw error;
   }
 };
 
-exports.deleteCommandeEntreprise = async (id) => {
+exports.deleteCommandeGlobale = async (id) => {
   try {
-    const commande = await findCommandeEntrepriseById(id);
+    const commande = await findCommandeGlobaleById(id);
     await commande.destroy();
     return { message: 'Commande deleted successfully' };
   } catch (error) {
-    console.error('Error deleting CommandeEntreprise:', error);
+    console.error('Error deleting CommandeGlobale:', error);
     throw error;
   }
 };

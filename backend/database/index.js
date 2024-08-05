@@ -4,10 +4,16 @@ const { Sequelize, DataTypes } = require('sequelize');
 const dbConfig = require('../config/config');
 const path = require('path');
 
-const sequelize = new Sequelize(dbConfig.development.database, dbConfig.development.username, dbConfig.development.password, {
+/*const sequelize = new Sequelize(dbConfig.development.database, dbConfig.development.username, dbConfig.development.password, {
     host: dbConfig.development.host,
     dialect: dbConfig.development.dialect,
     logging: false
+});*/
+
+const sequelize = new Sequelize(dbConfig.test.database, dbConfig.test.username, dbConfig.test.password, {
+  host: dbConfig.test.host,
+  dialect: dbConfig.test.dialect,
+  logging: false
 });
 
 const db = {};
@@ -19,10 +25,10 @@ const importModel = (modelName) => {
 
 // Importation des modèles
 db.User = importModel('User');
-db.ProductBDD = importModel('ProductBDD');
-db.ProductBDDHistory = importModel('ProductBDDHistory');
-db.Product = importModel('Product');
-db.CommandeEntreprise = importModel('CommandeEntreprise');
+db.CatalogueProduit = importModel('CatalogueProduit');                          //ProductBDD
+db.CatalogueProduitHistory = importModel('CatalogueProduitHistory');           //ProductBDDHistory 
+db.QuantiteProduit = importModel('QuantiteProduit');                            //Product
+db.CommandeGlobale = importModel('CommandeGlobale');                            //CommandeEntreprise
 db.CommandeSecteur = importModel('CommandeSecteur');
 db.RecetteSecteur = importModel('RecetteSecteur');
 db.StockSecteur = importModel('StockSecteur');
@@ -32,11 +38,11 @@ db.InvenduSecteur = importModel('InvenduSecteur');
 db.PerteSecteur = importModel('PerteSecteur');
 
 // Define the junction table for many-to-many relationship
-db.UserCommandeEntreprise = sequelize.define('UserCommandeEntreprise', {}, { timestamps: false });
+db.UserCommandeGlobale = sequelize.define('UserCommandeGlobale', {}, { timestamps: false });
 
 // Define the many-to-many relationships
-db.User.belongsToMany(db.CommandeEntreprise, { through: db.UserCommandeEntreprise, foreignKey: 'userId', otherKey: 'commandeEntrepriseId' });
-db.CommandeEntreprise.belongsToMany(db.User, { through: db.UserCommandeEntreprise, foreignKey: 'commandeEntrepriseId', otherKey: 'userId' });
+db.User.belongsToMany(db.CommandeGlobale, { through: db.UserCommandeGlobale, foreignKey: 'userId', otherKey: 'CommandeGlobaleId' });
+db.CommandeGlobale.belongsToMany(db.User, { through: db.UserCommandeGlobale, foreignKey: 'CommandeGlobaleId', otherKey: 'userId' });
 
 // Définition des associations avec cascade
 
@@ -48,26 +54,26 @@ db.User.hasMany(db.ChargeSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', 
 db.User.hasMany(db.InvenduSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
 db.User.hasMany(db.PerteSecteur, { foreignKey: 'id_User', onDelete: 'CASCADE', hooks: true });
 
-db.ProductBDD.hasMany(db.Product, { foreignKey: 'id_produitBDD', onDelete: 'CASCADE', hooks: true });
-db.ProductBDD.hasMany(db.ProductBDDHistory, { foreignKey: 'id_produitBDD', onDelete: 'CASCADE', hooks: true });
+db.CatalogueProduit.hasMany(db.QuantiteProduit, { foreignKey: 'id_catalogueProduit', onDelete: 'CASCADE', hooks: true });
+db.CatalogueProduit.hasMany(db.CatalogueProduitHistory, { foreignKey: 'id_catalogueProduit', onDelete: 'CASCADE', hooks: true });
 
-db.Product.belongsTo(db.ProductBDD, { foreignKey: 'id_produitBDD' });
-db.Product.belongsTo(db.CommandeSecteur, { foreignKey: 'idCommandeSecteur' });
-db.Product.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
+db.QuantiteProduit.belongsTo(db.CatalogueProduit, { foreignKey: 'id_catalogueProduit' });
+db.QuantiteProduit.belongsTo(db.CommandeSecteur, { foreignKey: 'idCommandeSecteur' });
+db.QuantiteProduit.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
 
-db.ProductBDDHistory.belongsTo(db.ProductBDD, { foreignKey: 'id_produitBDD' });
+db.CatalogueProduitHistory.belongsTo(db.CatalogueProduit, { foreignKey: 'id_produitBDD' });
 
-db.CommandeEntreprise.hasMany(db.CommandeSecteur, { foreignKey: 'idCommandeEntreprise', onDelete: 'CASCADE', hooks: true });
+db.CommandeGlobale.hasMany(db.CommandeSecteur, { foreignKey: 'idCommandeGlobale', onDelete: 'CASCADE', hooks: true });
 
 db.CommandeSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
-db.CommandeSecteur.belongsTo(db.CommandeEntreprise, { foreignKey: 'idCommandeEntreprise' });
+db.CommandeSecteur.belongsTo(db.CommandeGlobale, { foreignKey: 'idCommandeGlobale' });
 db.CommandeSecteur.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
 db.CommandeSecteur.hasOne(db.RecetteSecteur, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
-db.CommandeSecteur.hasMany(db.Product, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
+db.CommandeSecteur.hasMany(db.QuantiteProduit, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.StockSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.StockSecteur.hasMany(db.CommandeSecteur, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });
-db.StockSecteur.hasMany(db.Product, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });
+db.StockSecteur.hasMany(db.QuantiteProduit, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.RecetteSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.RecetteSecteur.belongsTo(db.CommandeSecteur, { foreignKey: 'idCommandeSecteur' });
@@ -88,8 +94,7 @@ db.InvenduSecteur.belongsTo(db.RecetteSecteur, { foreignKey: 'idRecetteSecteur' 
 db.PerteSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.PerteSecteur.belongsTo(db.RecetteSecteur, { foreignKey: 'idRecetteSecteur' });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+
 
 
 // Hooks pour la création conjointe
@@ -102,4 +107,7 @@ db.RecetteSecteur.afterCreate(async (recetteSecteur, options) => {
   await db.PerteSecteur.create({ idRecetteSecteur: recetteSecteur.idRecetteSecteur }, { transaction: options.transaction });
 });
 
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 module.exports = db;

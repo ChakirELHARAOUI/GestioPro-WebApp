@@ -3,8 +3,8 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const ProductBDD = sequelize.define('ProductBDD', {
-    id_produitBDD: {
+  const CatalogueProduit = sequelize.define('CatalogueProduit', {
+    id_catalogueProduit: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -22,9 +22,9 @@ module.exports = (sequelize) => {
       allowNull: false,
     }
   }, {
-    tableName: 'ProductBDDs',
+    tableName: 'CatalogueProduit',
     timestamps: true,
   });
 
-  return ProductBDD;
+  return CatalogueProduit;
 };

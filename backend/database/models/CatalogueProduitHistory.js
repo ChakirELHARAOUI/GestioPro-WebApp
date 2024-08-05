@@ -3,7 +3,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const ProductBDDHistory = sequelize.define('ProductBDDHistory', {
+  const CatalogueProduitHistory = sequelize.define('CatalogueProduitHistory', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -14,9 +14,9 @@ module.exports = (sequelize) => {
       allowNull: false,
     }
   }, {
-    tableName: 'ProductBDDHistories',
+    tableName: 'CatalogueProduitHistory',
     timestamps: true,
   });
 
-  return ProductBDDHistory;
+  return CatalogueProduitHistory;
 };

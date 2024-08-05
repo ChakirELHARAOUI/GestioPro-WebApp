@@ -1,4 +1,10 @@
 <!> Urgent & Important
+    <> Finir la migration des changement des noms des variable et paramètres et faire le test pour le frontend
+    <> UpdateCatalogueProduit à revoir
+    <> DeleteCatalogueProduit à revoir ( j'ai essayé de supprimer un produit non existant)
+    <> UpdateCommandeGlobale à revoir
+    
+
 
 
 

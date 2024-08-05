@@ -3,13 +3,13 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Product = sequelize.define('Product', {
-    id_produit: {
+  const QuantiteProduit  = sequelize.define('QuantiteProduit ', {
+    id_quantiteProduit: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    quantity: {
+    quantite: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -18,9 +18,9 @@ module.exports = (sequelize) => {
       allowNull: false,
     }
   }, {
-    tableName: 'Products',
+    tableName: 'QuantiteProduit ',
     timestamps: false, 
   });
 
-  return Product;
+  return QuantiteProduit ;
 };

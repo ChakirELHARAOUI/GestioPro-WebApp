@@ -1,7 +1,7 @@
 const cors = require('cors');
 const app = require('./app');
 const { sequelize } = require('./backend/database/index');
-const userService = require('./backend/services/userService');
+const userService = require('./backend/services/UserService');
 const PORT = process.env.PORT || 3000;
 require('dotenv').config();
 

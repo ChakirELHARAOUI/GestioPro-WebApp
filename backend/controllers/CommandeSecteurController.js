@@ -1,4 +1,4 @@
-const commandeSecteurService = require('../services/commSectService');
+const commandeSecteurService = require('../services/CommandeSecteurService');
 
 exports.createCommandeSecteur = async (req, res) => {
   try {

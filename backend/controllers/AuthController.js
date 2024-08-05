@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const authService = require('../services/authService');
+const authService = require('../services/AuthService');
 
 
 async function login(req, res) {
