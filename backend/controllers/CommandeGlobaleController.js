@@ -1,4 +1,5 @@
 const CommandeGlobaleService = require('../services/CommandeGlobaleService');
+const { CommandeGlobale, CommandeSecteur, User, sequelize } = require('../database/index');
 
 exports.createCommandeGlobale = async (req, res) => {
   try {
@@ -25,6 +26,22 @@ exports.getAllCommandeGlobale = async (req, res) => {
   }
 };
 
+exports.getAllCommandeGlobales = async (req, res) => {
+  try {
+    const commandeGlobales = await CommandeGlobale.findAll({
+      include: [
+        {
+          model: CommandeSecteur,
+          include: [User]
+        }
+      ]
+    });
+    res.json(commandeGlobales);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.getCommandeGlobale = async (req, res) => {
   try {
     const commande = await CommandeGlobaleService.getCommandeGlobale(req.params.id);
@@ -36,6 +53,34 @@ exports.getCommandeGlobale = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+exports.getCommandeGlobaleById = async (req, res) => {
+  try {
+    const commandeGlobale = await CommandeGlobale.findByPk(req.params.id, {
+      include: [
+        {
+          model: CommandeSecteur,
+          include: [
+            {
+              model: QuantiteProduit,
+              include: [CatalogueProduit]
+            },
+            User
+          ]
+        }
+      ]
+    });
+    if (!commandeGlobale) {
+      return res.status(404).json({ message: 'Commande Globale not found' });
+    }
+    res.json(commandeGlobale);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 
 exports.updateCommandeGlobale = async (req, res) => {
   try {

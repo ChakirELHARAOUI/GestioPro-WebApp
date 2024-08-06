@@ -3,13 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const commandeGlobaleController = require('../controllers/CommandeGlobaleController');
-const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
-const { ROLES } = require('../constantes');
+const { authMiddleware, managerOrAdminOnly } = require('../middleware/authMiddleware');
 
-router.post('/', authMiddleware, roleMiddleware([ROLES.MANAGER]),commandeGlobaleController.createCommandeGlobale);
-router.get('/', authMiddleware, roleMiddleware([ROLES.MANAGER, ROLES.VENDEUR]), commandeGlobaleController.getAllCommandeGlobale);
-router.get('/:id', authMiddleware, roleMiddleware([ROLES.MANAGER]),commandeGlobaleController.getCommandeGlobale);
-router.put('/:id', authMiddleware, roleMiddleware([ROLES.MANAGER]),commandeGlobaleController.updateCommandeGlobale);
-router.delete('/:id', authMiddleware,roleMiddleware([ROLES.MANAGER]),  commandeGlobaleController.deleteCommandeGlobale);
+router.post('/', authMiddleware, managerOrAdminOnly, commandeGlobaleController.createCommandeGlobale);
+router.get('/', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getAllCommandeGlobale);
+router.get('/all', authMiddleware, managerOrAdminOnly,commandeGlobaleController.getAllCommandeGlobales);  //TEST
+router.get('/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getCommandeGlobale);
+router.get('/2/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getCommandeGlobaleById); //TEST
+router.put('/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.updateCommandeGlobale);
+router.delete('/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.deleteCommandeGlobale);
 
 module.exports = router;

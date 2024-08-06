@@ -2,6 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 const db = require('../database/index');
+const { ROLES } = require('../constantes');
 const { User } = db;
 
 const authMiddleware = async (req, res, next) => {
@@ -18,7 +19,6 @@ const authMiddleware = async (req, res, next) => {
 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     const user = await User.findByPk(decoded.id);
 
     if (!user) {
@@ -33,14 +33,12 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-const roleMiddleware = (allowedRoles) => {
-  return (req, res, next) => {
-    if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied !!' });
-    }
-    next();
-  };
+const managerOrAdminOnly = (req, res, next) => {
+  if (req.user.role !== ROLES.MANAGER && req.user.role !== ROLES.ADMIN) {
+    return res.status(403).send({ error: 'Access denied.' });
+  }
+  next();
 };
-module.exports = { authMiddleware, roleMiddleware  };
+module.exports = { authMiddleware, managerOrAdminOnly  };
 
 

@@ -26,8 +26,8 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', auth_Route);
 app.use('/api/users', user_Route);
-app.use('/api/catalogueProduit', CatalogueProduit_Route);
-app.use('/api/commandeEntreprise', CommandeGlobale_Route);
+app.use('/api/catalogue-produit', CatalogueProduit_Route);
+app.use('/api/commande-globale', CommandeGlobale_Route);
 app.use('/api/commande-secteur', commandeSecteur_Route);
 app.use('/api/products', QuantiteProduit_Route);
 

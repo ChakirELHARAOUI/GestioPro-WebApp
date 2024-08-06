@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
     },
     sector: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     }
   }, {
     tableName: 'QuantiteProduit ',

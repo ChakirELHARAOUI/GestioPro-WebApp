@@ -4,10 +4,10 @@ const quantiteProduitController = require('../controllers/QuantiteProduitControl
 const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 const { ROLES } = require('../constantes');
 
-router.post('/', authMiddleware, roleMiddleware([ROLES.MANAGER]), quantiteProduitController.createProduct);
-router.get('/', authMiddleware, quantiteProduitController.getAllProducts);
-router.get('/:id', authMiddleware, quantiteProduitController.getProductById);
-router.put('/:id', authMiddleware, roleMiddleware([ROLES.MANAGER]), quantiteProduitController.updateProduct);
-router.delete('/:id', authMiddleware, roleMiddleware([ROLES.MANAGER]), quantiteProduitController.deleteProduct);
+router.post('/',        authMiddleware,         quantiteProduitController.createProduct);
+router.get('/',         authMiddleware,         quantiteProduitController.getAllProducts);
+router.get('/:id',      authMiddleware,         quantiteProduitController.getProductById);
+router.put('/:id',      authMiddleware,         quantiteProduitController.updateProduct);
+router.delete('/:id',   authMiddleware,         quantiteProduitController.deleteProduct);
 
 module.exports = router;

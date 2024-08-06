@@ -22,6 +22,6 @@ router.use(cors(corsOptions));
 router.post('/login', authController.login);
 
 // Route pour obtenir le profil de l'utilisateur connecté
-router.get('/profile/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.VENDEUR]), authController.getUserProfile);
+router.get('/profile/:id', authMiddleware, authController.getUserProfile);
 
 module.exports = router;

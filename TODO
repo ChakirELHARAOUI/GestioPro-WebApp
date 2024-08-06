@@ -1,19 +1,12 @@
-<!> Urgent & Important
-    <> Finir la migration des changement des noms des variable et paramètres et faire le test pour le frontend
-    <> UpdateCatalogueProduit à revoir
-    <> DeleteCatalogueProduit à revoir ( j'ai essayé de supprimer un produit non existant)
-    <> UpdateCommandeGlobale à revoir
-    
+<!> Urgent & Important    
 
 
 
 
 Gestion des commandes
-    <>Entreprises
 
     <>Secteur
-        -> Ensuite, les vendeurs peuvent la modifier (ajouter des produits) et la soumettre
-        -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier
+        -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier (Creer une fonction Soummission Vendeur different du CRUD pour le Manager| Elle fait exactement la meme chose que Update et chaque l etat en false)
         -> Backend et Frontend
 
 Gestion des commandeEntreprise (Manager) | Il s'engloble avec la gestion des commandes (DONC PRIORITE AU BACKEND CommandeSecteur)

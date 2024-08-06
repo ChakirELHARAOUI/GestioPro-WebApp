@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Modal, Form, Alert, OverlayTrigger, Tooltip, Container } from 'react-bootstrap';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
-import { getAllProducts, createProduct, updateProduct, deleteProduct } from '../../api/productBDDApi';
-import './ProductBDDManagement.css';
+import { getAllProducts, createProduct, updateProduct, deleteProduct } from '../../api/catalogueProduitApi';
+import './CatalogueProduit.css';
 
 const fournisseurColors = {
   'collaimo': '#28a745',
@@ -77,7 +77,7 @@ const ProductBDDManagement = () => {
 
   return (
     <Container fluid className="product-management-container">
-      <h2 className="product-management-title">Gestion des Produits</h2>
+      <h2 className="product-management-title">Catalogue des produits</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <Button variant="primary" onClick={handleCreate} className="create-product-btn">
         <FaPlus className="me-2" />Créer un nouveau produit

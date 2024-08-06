@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const userController = require('../controllers/UserController');
-const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, managerOrAdminOnly } = require('../middleware/authMiddleware');
 const { ROLES } = require('../constantes');
 
 const corsOptions = {
@@ -17,10 +17,10 @@ const corsOptions = {
 router.use(cors(corsOptions));
 
 // RESTful routes
-router.post('/', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), userController.createUser);
-router.get('/', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), userController.getUsers);
-router.get('/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), userController.getUserById);
-router.put('/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), userController.updateUser);
-router.delete('/:id', authMiddleware, roleMiddleware([ROLES.ADMIN, ROLES.MANAGER]), userController.deleteUser);
+router.post('/', authMiddleware, managerOrAdminOnly, userController.createUser);
+router.get('/', authMiddleware, managerOrAdminOnly, userController.getUsers);
+router.get('/:id', authMiddleware, managerOrAdminOnly, userController.getUserById);
+router.put('/:id', authMiddleware, managerOrAdminOnly, userController.updateUser);
+router.delete('/:id', authMiddleware, managerOrAdminOnly, userController.deleteUser);
 
 module.exports = router;

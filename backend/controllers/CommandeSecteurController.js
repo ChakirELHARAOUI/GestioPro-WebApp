@@ -2,7 +2,8 @@ const commandeSecteurService = require('../services/CommandeSecteurService');
 
 exports.createCommandeSecteur = async (req, res) => {
   try {
-    const commandeSecteur = await commandeSecteurService.createCommandeSecteur(req.body);
+    const { quantiteProduits, ...commandeSecteurData } = req.body;
+    const commandeSecteur = await commandeSecteurService.createCommandeSecteur(commandeSecteurData, quantiteProduits);
     res.status(201).json(commandeSecteur);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -32,7 +33,8 @@ exports.getCommandeSecteurById = async (req, res) => {
 
 exports.updateCommandeSecteur = async (req, res) => {
   try {
-    const commandeSecteur = await commandeSecteurService.updateCommandeSecteur(req.params.id, req.body);
+    const { quantiteProduits, ...commandeSecteurData } = req.body;
+    const commandeSecteur = await commandeSecteurService.updateCommandeSecteur(req.params.id, commandeSecteurData, quantiteProduits);
     if (!commandeSecteur) {
       return res.status(404).json({ message: 'CommandeSecteur not found' });
     }
