@@ -49,8 +49,8 @@ const Header = () => {
           <Nav className="flex-column">
             <Nav.Link as={Link} to="/dashboard" onClick={toggleMenu}>Tableau de bord</Nav.Link>
             <Nav.Link as={Link} to="/user-management" onClick={toggleMenu}>Gestion des utilisateurs</Nav.Link>
-            <Nav.Link as={Link} to="/product-management" onClick={toggleMenu}>Gestion des produits</Nav.Link>
-            <Nav.Link as={Link} to="/order-management" onClick={toggleMenu}>Gestion des commandes</Nav.Link>
+            <Nav.Link as={Link} to="/catalogue-produit" onClick={toggleMenu}>Gestion des produits</Nav.Link>
+            <Nav.Link as={Link} to="/gestion-commandes" onClick={toggleMenu}>Gestion des commandes</Nav.Link>
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>

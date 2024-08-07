@@ -69,7 +69,7 @@ db.CommandeSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.CommandeSecteur.belongsTo(db.CommandeGlobale, { foreignKey: 'idCommandeGlobale' });
 db.CommandeSecteur.belongsTo(db.StockSecteur, { foreignKey: 'idStockSecteur' });
 db.CommandeSecteur.hasOne(db.RecetteSecteur, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
-db.CommandeSecteur.hasMany(db.QuantiteProduit, { foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
+db.CommandeSecteur.hasMany(db.QuantiteProduit, { as: 'QuantiteProduits', foreignKey: 'idCommandeSecteur', onDelete: 'CASCADE', hooks: true });
 
 db.StockSecteur.belongsTo(db.User, { foreignKey: 'id_User' });
 db.StockSecteur.hasMany(db.CommandeSecteur, { foreignKey: 'idStockSecteur', onDelete: 'CASCADE', hooks: true });

@@ -1,5 +1,5 @@
 <!> Urgent & Important    
-
+    -> Creer une requete pour regrouper toutes les QuantiteProduit de tout les vendeurs
 
 
 
@@ -9,8 +9,6 @@ Gestion des commandes
         -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier (Creer une fonction Soummission Vendeur different du CRUD pour le Manager| Elle fait exactement la meme chose que Update et chaque l etat en false)
         -> Backend et Frontend
 
-Gestion des commandeEntreprise (Manager) | Il s'engloble avec la gestion des commandes (DONC PRIORITE AU BACKEND CommandeSecteur)
-    -> Faire la partie frontend (Pas la priorité)
 
 
 Gestion des Users

@@ -1,6 +1,4 @@
-// backend/services/CommandeGlobaleService.js
-
-const {User, CommandeGlobale, CommandeSecteur, StockSecteur, sequelize} = require('../database/index');  //CommandeGlobale
+const { CommandeGlobale, CommandeSecteur, User, QuantiteProduit, CatalogueProduit, StockSecteur, sequelize } = require('../database/index');
 const moment = require('moment');
 
 // Fonctions auxiliaires
@@ -90,27 +88,20 @@ const formatCommandeGlobaleOutput = async (commande) => {
 exports.createCommandeGlobale = async (CommandeGlobaleData, userIds) => {
   const transaction = await sequelize.transaction();
   try {
-    // Utiliser la date d'aujourd'hui si dateDepart n'est pas fournie
     const dateDepart = CommandeGlobaleData.dateDepart 
       ? moment(CommandeGlobaleData.dateDepart, 'D/MM/YYYY') 
       : moment().startOf('day');
 
-    // Vérifier si la date de départ est ultérieure à aujourd'hui
     if (dateDepart.isBefore(moment(), 'day')) {
       throw new Error("La date de départ ne peut pas être avant à la date d'aujourd'hui");
     }
 
-    console.log("Creating commandeGlobal ....");
     const commandeGlobale = await CommandeGlobale.create({
       ...CommandeGlobaleData,
       dateDepart: dateDepart.toDate()
     }, { transaction });
 
-    console.log("CommandeGlobale Created ....");
-
-    console.log("Associating users to CommandeGlobale ....");
     await associateUsersToCommandeGlobale(commandeGlobale, userIds, transaction);
-    console.log("Initializing CommandeSecteurs ....");
     await initializeCommandeSecteurs(commandeGlobale, userIds, transaction);
     await transaction.commit();
     return await formatCommandeGlobaleOutput(commandeGlobale);
@@ -121,8 +112,6 @@ exports.createCommandeGlobale = async (CommandeGlobaleData, userIds) => {
   }
 };
 
-
-
 exports.getAllCommandesEntreprise = async () => {
   const commandes = await CommandeGlobale.findAll({
     include: [{
@@ -132,6 +121,18 @@ exports.getAllCommandesEntreprise = async () => {
     }]
   });
   return Promise.all(commandes.map(formatCommandeGlobaleOutput));
+};
+
+exports.getAllCommandeGlobales = async () => {
+  const commandeGlobales = await CommandeGlobale.findAll({
+    include: [
+      {
+        model: CommandeSecteur,
+        include: [User]
+      }
+    ]
+  });
+  return commandeGlobales;
 };
 
 exports.getCommandeGlobale = async (id) => {
@@ -148,12 +149,32 @@ exports.getCommandeGlobale = async (id) => {
   return formatCommandeGlobaleOutput(commande);
 };
 
+exports.getCommandeGlobaleById = async (id) => {
+  const commandeGlobale = await CommandeGlobale.findByPk(id, {
+    include: [
+      {
+        model: CommandeSecteur,
+        include: [
+          {
+            model: QuantiteProduit,
+            include: [CatalogueProduit]
+          },
+          User
+        ]
+      }
+    ]
+  });
+  if (!commandeGlobale) {
+    throw new Error('Commande Globale not found');
+  }
+  return commandeGlobale;
+};
+
 exports.updateCommandeGlobale = async (id, updateData, userIds) => {
   const transaction = await sequelize.transaction();
   try {
     const commande = await findCommandeGlobaleById(id);
 
-    // Mise à jour des champs si fournis
     if (updateData.dateDepart) {
       commande.dateDepart = moment(updateData.dateDepart, 'D/MM/YYYY').toDate();
     }
@@ -163,7 +184,6 @@ exports.updateCommandeGlobale = async (id, updateData, userIds) => {
 
     await commande.save({ transaction });
 
-    // Mise à jour des utilisateurs si fournis
     if (userIds && userIds.length > 0) {
       await dissociateUsersAndDeleteCommandeSecteurs(commande, userIds, transaction);
       await associateNewUsersAndInitializeCommandeSecteurs(commande, userIds, transaction);
@@ -188,3 +208,51 @@ exports.deleteCommandeGlobale = async (id) => {
     throw error;
   }
 };
+
+exports.getQuantiteProduitsForCommandeGlobale = async (id) => {
+  const commandeGlobale = await CommandeGlobale.findByPk(id, {
+    include: [
+      {
+        model: CommandeSecteur,
+        include: [
+          {
+            model: QuantiteProduit,
+            as: 'QuantiteProduits',  // Utilisez l'alias correct
+            include: [CatalogueProduit]
+          },
+          {
+            model: User,
+            attributes: ['id_User', 'username']
+          }
+        ]
+      }
+    ]
+  });
+
+  if (!commandeGlobale) {
+    throw new Error('Commande Globale not found');
+  }
+
+  const quantiteProduits = {};
+
+  commandeGlobale.CommandeSecteurs.forEach(secteur => {
+    secteur.QuantiteProduits.forEach(qp => {
+      if (!quantiteProduits[qp.id_catalogueProduit]) {
+        quantiteProduits[qp.id_catalogueProduit] = {
+          nom: qp.CatalogueProduit.name,
+          vendeurs: {},
+          total: 0
+        };
+      }
+      if (!quantiteProduits[qp.id_catalogueProduit].vendeurs[secteur.User.username]) {
+        quantiteProduits[qp.id_catalogueProduit].vendeurs[secteur.User.username] = 0;
+      }
+      quantiteProduits[qp.id_catalogueProduit].vendeurs[secteur.User.username] += qp.quantite;
+      quantiteProduits[qp.id_catalogueProduit].total += qp.quantite;
+      console.log("Quantite Produits:", quantiteProduits);
+    });
+  });
+
+  return Object.values(quantiteProduits);
+};
+

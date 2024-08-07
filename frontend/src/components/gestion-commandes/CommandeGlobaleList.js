@@ -1,6 +1,6 @@
-// frontend/src/components/CommandeGlobaleList.js
+// frontend/src/components/gestion-commandes/CommandeGlobaleList.js
 import React, { useEffect, useState } from 'react';
-import axios from '../../api/axios';
+import { getAllCommandeGlobale } from '../../api/commandeGlobaleApi';
 
 const CommandeGlobaleList = () => {
   const [commandeGlobales, setCommandeGlobales] = useState([]);
@@ -8,7 +8,7 @@ const CommandeGlobaleList = () => {
   useEffect(() => {
     const fetchCommandeGlobales = async () => {
       try {
-        const response = await axios.get('api/commande-globale/all');
+        const response = await getAllCommandeGlobale();
         setCommandeGlobales(response.data);
       } catch (error) {
         console.error('Error fetching commandeGlobales:', error);
@@ -22,18 +22,19 @@ const CommandeGlobaleList = () => {
     <div className="container">
       <div className="row">
         {commandeGlobales.map((commande) => (
-          <div className="col-md-4" key={commande.id}>
+          <div className="col-md-4" key={commande.idCommandeGlobale}>
             <div className="card mb-4">
               <div className="card-body">
-                <h5 className="card-title">Commande Globale #{commande.id}</h5>
+                <h5 className="card-title">Commande Globale #{commande.idCommandeGlobale}</h5>
                 <p className="card-text">Date de départ: {commande.dateDepart}</p>
+                <p className="card-text">État: {commande.etat ? 'Actif' : 'Inactif'}</p>
                 <p className="card-text">Vendeurs associés:</p>
                 <ul>
-                  {commande.CommandeSecteurs.map((secteur) => (
-                    <li key={secteur.User.id}>{secteur.User.username}</li>
+                  {commande.users.map((user) => (
+                    <li key={user.id_User}>{user.username}</li>
                   ))}
                 </ul>
-                <a href={`/commandeGlobales/${commande.id}`} className="btn btn-primary">Voir Détails</a>
+                <a href={`/gestion-commandes/${commande.idCommandeGlobale}`} className="btn btn-primary">Voir Détails</a>
               </div>
             </div>
           </div>

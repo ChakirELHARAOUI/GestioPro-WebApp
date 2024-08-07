@@ -1,23 +1,32 @@
-// frontend/src/components/CommandeGlobaleDetails.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from '../api/axios';
+import { getCommandeGlobale, getQuantiteProduitsForCommandeGlobale } from '../../api/commandeGlobaleApi';
 
 const CommandeGlobaleDetails = () => {
   const { id } = useParams();
   const [commandeGlobale, setCommandeGlobale] = useState(null);
+  const [quantiteProduits, setQuantiteProduits] = useState([]);
 
   useEffect(() => {
-    const fetchCommandeGlobale = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`/commande-globale/2/${id}`);
-        setCommandeGlobale(response.data);
+        const [commandeResponse, quantiteResponse] = await Promise.all([
+          getCommandeGlobale(id),
+          getQuantiteProduitsForCommandeGlobale(id)
+        ]);
+        setCommandeGlobale(commandeResponse.data);
+        
+        if (Array.isArray(quantiteResponse.data)) {
+          setQuantiteProduits(quantiteResponse.data);
+        } else {
+          console.error('quantiteProduits is not an array:', quantiteResponse.data);
+        }
       } catch (error) {
-        console.error('Error fetching commandeGlobale:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchCommandeGlobale();
+    fetchData();
   }, [id]);
 
   if (!commandeGlobale) {
@@ -26,23 +35,39 @@ const CommandeGlobaleDetails = () => {
 
   return (
     <div className="container">
-      <h2>Commande Globale #{commandeGlobale.id}</h2>
+      <h2>Commande Globale #{commandeGlobale.idCommandeGlobale}</h2>
       <p>Date de départ: {commandeGlobale.dateDepart}</p>
-      <h3>Quantité de Produits</h3>
-      <ul>
-        {commandeGlobale.CommandeSecteurs.flatMap((secteur) =>
-          secteur.QuantiteProduits.map((quantiteProduit) => (
-            <li key={quantiteProduit.id}>
-              {quantiteProduit.CatalogueProduit.nom} - {quantiteProduit.quantite}
-            </li>
-          ))
-        )}
-      </ul>
+      <p>État: {commandeGlobale.etat ? 'Actif' : 'Inactif'}</p>
+      
+      <h3>Quantité de Produits par Vendeur</h3>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            {commandeGlobale.users.map(user => (
+              <th key={user.id_User}>{user.username}</th>
+            ))}
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {quantiteProduits.map(produit => (
+            <tr key={produit.nom}>
+              <td>{produit.nom}</td>
+              {commandeGlobale.users.map(user => (
+                <td key={user.id_User}>{produit.vendeurs[user.username] || 0}</td>
+              ))}
+              <td>{produit.total}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <h3>Vendeurs</h3>
       <ul>
-        {commandeGlobale.CommandeSecteurs.map((secteur) => (
-          <li key={secteur.User.id}>
-            <a href={`/vendeurs/${secteur.User.id}`}>{secteur.User.username}</a>
+        {commandeGlobale.users.map((user) => (
+          <li key={user.id_User}>
+            <a href={`/vendeurs/${user.id_User}`}>{user.username}</a>
           </li>
         ))}
       </ul>

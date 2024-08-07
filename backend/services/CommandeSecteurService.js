@@ -4,7 +4,7 @@ class CommandeSecteurService {
   static async createCommandeSecteur(data, quantiteProduits) {
     const transaction = await sequelize.transaction();
     try {
-      await this._verifyQuantiteProduits(quantiteProduits, data.idStockSecteur);
+      await this._verifyQuantiteProduits(quantiteProduits);
       const commandeSecteur = await this._createCommandeSecteurBase(data, transaction);
       await this._addQuantiteProduits(commandeSecteur.idCommandeSecteur, quantiteProduits, transaction);
       await transaction.commit();
@@ -18,7 +18,7 @@ class CommandeSecteurService {
   static async getAllCommandeSecteurs() {
     return await CommandeSecteur.findAll({
       include: [
-        { model: QuantiteProduit, include: [CatalogueProduit] }
+        { model: QuantiteProduit, as: 'QuantiteProduits', include: [CatalogueProduit] }
       ]
     });
   }
@@ -26,7 +26,7 @@ class CommandeSecteurService {
   static async getCommandeSecteurById(id) {
     return await CommandeSecteur.findByPk(id, {
       include: [
-        { model: QuantiteProduit, include: [CatalogueProduit] },
+        { model: QuantiteProduit, as: 'QuantiteProduits', include: [CatalogueProduit] },
         User,
         CommandeGlobale,
         StockSecteur,
@@ -38,15 +38,16 @@ class CommandeSecteurService {
   static async updateCommandeSecteur(id, data, quantiteProduits) {
     const transaction = await sequelize.transaction();
     try {
-      if (quantiteProduits) {
-        await this._verifyQuantiteProduits(quantiteProduits, data.idStockSecteur);
-      }
 
-      const commandeSecteur = await this._updateCommandeSecteurBase(id, data, transaction);
+      const commandeSecteur = await this._verifyCommandeSecteur(id, transaction);
+      await this._verifyQuantiteProduits(quantiteProduits, transaction);
+      await this._updateCommandeSecteurBase(commandeSecteur, data, transaction);
       await this._updateQuantiteProduits(id, quantiteProduits, transaction);
+      
       await transaction.commit();
       return await this.getCommandeSecteurById(id);
     } catch (error) {
+      console.error("Error in updateCommandeSecteur:", error);
       await transaction.rollback();
       throw error;
     }
@@ -64,44 +65,25 @@ class CommandeSecteurService {
     }
   }
 
-  static async addQuantiteProduit(commandeSecteurId, quantiteProduitData) {
-    return await QuantiteProduit.create({ ...quantiteProduitData, idCommandeSecteur: commandeSecteurId });
-  }
-
-  static async updateQuantiteProduit(id, data) {
-    const quantiteProduit = await QuantiteProduit.findByPk(id);
-    if (quantiteProduit) {
-      return await quantiteProduit.update(data);
-    }
-    return null;
-  }
-
-  static async deleteQuantiteProduit(id) {
-    const quantiteProduit = await QuantiteProduit.findByPk(id);
-    if (quantiteProduit) {
-      await quantiteProduit.destroy();
-      return true;
-    }
-    return false;
-  }
-
   // Fonctions auxiliaires privées
 
-  static async _verifyQuantiteProduits(quantiteProduits, idStockSecteur) {
-    const transaction = await sequelize.transaction();
-    try {
-      for (const qp of quantiteProduits) {
-        const catalogueProduct = await CatalogueProduit.findByPk(qp.id_catalogueProduit, { transaction });
-        if (!catalogueProduct) {
-          throw new Error(`Product with id ${qp.id_catalogueProduit} not found in CatalogueProduit`);
-        }
-      }
-      await transaction.commit();
-      return true;
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
+  static async _verifyCommandeSecteur(idCommandeSecteur, transaction) {
+    const commandeSecteur = await CommandeSecteur.findByPk(idCommandeSecteur, { transaction });
+    if (!commandeSecteur) {
+      throw new Error(`CommandeSecteur with id ${idCommandeSecteur} not found`);
     }
+    return commandeSecteur;
+  }
+
+
+  static async _verifyQuantiteProduits(quantiteProduits, transaction) {
+    for (const qp of quantiteProduits) {
+      const catalogueProduct = await CatalogueProduit.findByPk(qp.id_catalogueProduit, { transaction });
+      if (!catalogueProduct) {
+        throw new Error(`Product with id ${qp.id_catalogueProduit} not found in CatalogueProduit`);
+      }
+    }
+    return true;
   }
 
   static async _createCommandeSecteurBase(data, transaction) {
@@ -116,14 +98,12 @@ class CommandeSecteurService {
     }
   }
 
-  static async _updateCommandeSecteurBase(id, data, transaction) {
-    const commandeSecteur = await CommandeSecteur.findByPk(id);
-    if (!commandeSecteur) {
-      throw new Error('CommandeSecteur not found');
+  static async _updateCommandeSecteurBase(commandeSecteur, data, transaction) {
+    if (data) {
+      await commandeSecteur.update(data, { transaction });
     }
-    return await commandeSecteur.update(data, { transaction });
+    return commandeSecteur;
   }
-
   static async _updateQuantiteProduits(id, quantiteProduits, transaction) {
     if (quantiteProduits) {
       const existingQuantiteProduits = await QuantiteProduit.findAll({
@@ -157,6 +137,7 @@ class CommandeSecteurService {
     }
   }
 
+
   static async _deleteCommandeSecteurBase(id, transaction) {
     const commandeSecteur = await CommandeSecteur.findByPk(id);
     if (commandeSecteur) {
@@ -168,3 +149,53 @@ class CommandeSecteurService {
 }
 
 module.exports = CommandeSecteurService;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*static async addQuantiteProduit(commandeSecteurId, quantiteProduitData) {
+    return await QuantiteProduit.create({ ...quantiteProduitData, idCommandeSecteur: commandeSecteurId });
+
+
+    static async updateQuantiteProduit(id, data) {
+    const quantiteProduit = await QuantiteProduit.findByPk(id);
+    if (quantiteProduit) {
+      return await quantiteProduit.update(data);
+    }
+    return null;
+  }
+
+
+  static async deleteQuantiteProduit(id) {
+    const quantiteProduit = await QuantiteProduit.findByPk(id);
+    if (quantiteProduit) {
+      await quantiteProduit.destroy();
+      return true;
+    }
+    return false;
+  }
+
+  }*/

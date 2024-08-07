@@ -1,5 +1,4 @@
 const CommandeGlobaleService = require('../services/CommandeGlobaleService');
-const { CommandeGlobale, CommandeSecteur, User, sequelize } = require('../database/index');
 
 exports.createCommandeGlobale = async (req, res) => {
   try {
@@ -16,7 +15,6 @@ exports.createCommandeGlobale = async (req, res) => {
   }
 };
 
-
 exports.getAllCommandeGlobale = async (req, res) => {
   try {
     const commandes = await CommandeGlobaleService.getAllCommandesEntreprise();
@@ -28,14 +26,7 @@ exports.getAllCommandeGlobale = async (req, res) => {
 
 exports.getAllCommandeGlobales = async (req, res) => {
   try {
-    const commandeGlobales = await CommandeGlobale.findAll({
-      include: [
-        {
-          model: CommandeSecteur,
-          include: [User]
-        }
-      ]
-    });
+    const commandeGlobales = await CommandeGlobaleService.getAllCommandeGlobales();
     res.json(commandeGlobales);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -54,23 +45,9 @@ exports.getCommandeGlobale = async (req, res) => {
   }
 };
 
-
 exports.getCommandeGlobaleById = async (req, res) => {
   try {
-    const commandeGlobale = await CommandeGlobale.findByPk(req.params.id, {
-      include: [
-        {
-          model: CommandeSecteur,
-          include: [
-            {
-              model: QuantiteProduit,
-              include: [CatalogueProduit]
-            },
-            User
-          ]
-        }
-      ]
-    });
+    const commandeGlobale = await CommandeGlobaleService.getCommandeGlobaleById(req.params.id);
     if (!commandeGlobale) {
       return res.status(404).json({ message: 'Commande Globale not found' });
     }
@@ -79,8 +56,6 @@ exports.getCommandeGlobaleById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 exports.updateCommandeGlobale = async (req, res) => {
   try {
@@ -94,7 +69,6 @@ exports.updateCommandeGlobale = async (req, res) => {
   }
 };
 
-
 exports.deleteCommandeGlobale = async (req, res) => {
   try {
     const result = await CommandeGlobaleService.deleteCommandeGlobale(req.params.id);
@@ -102,6 +76,16 @@ exports.deleteCommandeGlobale = async (req, res) => {
       return res.status(404).json({ message: 'Commande non trouvée' });
     }
     res.json({ message: 'Commande supprimée avec succès' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getQuantiteProduitsForCommandeGlobale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const quantiteProduits = await CommandeGlobaleService.getQuantiteProduitsForCommandeGlobale(id);
+    res.json(quantiteProduits);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

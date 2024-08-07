@@ -7,7 +7,8 @@ const { authMiddleware, managerOrAdminOnly } = require('../middleware/authMiddle
 
 router.post('/', authMiddleware, managerOrAdminOnly, commandeGlobaleController.createCommandeGlobale);
 router.get('/', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getAllCommandeGlobale);
-router.get('/all', authMiddleware, managerOrAdminOnly,commandeGlobaleController.getAllCommandeGlobales);  //TEST
+router.get('/:id/quantiteProduits', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getQuantiteProduitsForCommandeGlobale);
+router.get('/all', authMiddleware, managerOrAdminOnly,commandeGlobaleController.getAllCommandeGlobales);
 router.get('/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getCommandeGlobale);
 router.get('/2/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.getCommandeGlobaleById); //TEST
 router.put('/:id', authMiddleware, managerOrAdminOnly, commandeGlobaleController.updateCommandeGlobale);
