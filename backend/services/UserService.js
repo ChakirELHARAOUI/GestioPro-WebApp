@@ -31,10 +31,10 @@ async function createUserInDB(userData, transaction) {
   if (!isUnique) {
     throw new Error('Ce nom d\'utilisateur est déjà utilisé');
   }
-
+  const hachedPassword = await hashPassword(password);
   return await User.create({
     username,
-    password,
+    password : hachedPassword,
     sector,
     role
   }, { transaction });

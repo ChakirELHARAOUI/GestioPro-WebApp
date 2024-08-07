@@ -249,7 +249,6 @@ exports.getQuantiteProduitsForCommandeGlobale = async (id) => {
       }
       quantiteProduits[qp.id_catalogueProduit].vendeurs[secteur.User.username] += qp.quantite;
       quantiteProduits[qp.id_catalogueProduit].total += qp.quantite;
-      console.log("Quantite Produits:", quantiteProduits);
     });
   });
 

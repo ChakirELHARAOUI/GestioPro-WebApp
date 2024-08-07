@@ -3,11 +3,8 @@ const userService = require('../services/UserService');
 const bcrypt = require('bcrypt');
 
 async function createUser(req, res) {
-  const { username, password, sector, role } = req.body;
-
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await userService.createUser({ username, password: hashedPassword, sector, role });
+    const result = await userService.createUser(req.body);
     if (result.success) {
       res.status(201).json(result);
     } else {

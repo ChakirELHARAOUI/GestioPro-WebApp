@@ -1,7 +1,8 @@
+// server.js
+require('dotenv').config();
 const cors = require('cors');
 const app = require('./app');
 const { sequelize } = require('./backend/database/index');
-const userService = require('./backend/services/UserService');
 const PORT = process.env.PORT || 3000;
 require('dotenv').config();
 
@@ -11,16 +12,12 @@ app.use(cors({
   credentials: true, // Si vous avez besoin de supporter les cookies ou l'authentification
 }));
 
-// Authentification à la base de données
 sequelize.authenticate()
   .then(() => {
     console.log('Connexion à la base de données réussie');
-    // Synchronisation des modèles après une connexion réussie
-    require('./sync')().then(async() => {
-      // Vérification et création de l'utilisateur par défaut
-      await userService.createDefaultUserIfNoneExist();
-
-      // Démarrage du serveur après la synchronisation
+    const FORCE_SYNC = process.env.RESET_DB === 'true';;
+    const SEED_DB = process.env.RESET_DB === 'true';;
+    require('./sync')(FORCE_SYNC, SEED_DB).then(() => {
       app.listen(PORT, () => {
         console.log(`Serveur démarré sur le port ${PORT}`);
       });
