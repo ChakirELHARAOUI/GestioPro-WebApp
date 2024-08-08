@@ -38,7 +38,14 @@ const CommandeGlobaleList = () => {
 
   return (
     <div className="container">
-      <CreateCommandeGlobale onCommandeCreated={fetchCommandeGlobales} />
+      <button className="btn btn-primary mb-3" onClick={() => setShowCreateForm(!showCreateForm)}>
+        <FontAwesomeIcon icon={faPlus} /> Créer une Commande Globale
+      </button>
+      {showCreateForm && (
+        <div className="mb-4">
+          <CreateCommandeGlobale onCommandeCreated={fetchCommandeGlobales} />
+        </div>
+      )}
       <div className="commande-card-container">
         {commandeGlobales.map((commande) => (
           <div className="commande-card mb-4" key={commande.idCommandeGlobal}>
