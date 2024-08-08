@@ -11,7 +11,7 @@ const fournisseurColors = {
   'chergi': '#dc3545'
 };
 
-const ProductBDDManagement = () => {
+const CatalogueProduit = () => {
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({});
@@ -101,7 +101,7 @@ const ProductBDDManagement = () => {
                   </tr>
                   {fournisseurProducts.map((product) => (
                     <tr 
-                    key={product.id_produitBDD} 
+                    key={product.id_catalogueProduit} 
                     style={{ backgroundColor: `${fournisseurColors[fournisseur.toLowerCase()]}20` }}
                     className={`product-row`}
                   >
@@ -115,7 +115,7 @@ const ProductBDDManagement = () => {
                             </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="top" overlay={<Tooltip>Supprimer</Tooltip>}>
-                            <Button variant="light" size="sm" onClick={() => handleDelete(product.id_produitBDD)} className="action-btn">
+                            <Button variant="light" size="sm" onClick={() => handleDelete(product.id_catalogueProduit)} className="action-btn">
                               <FaTrash />
                             </Button>
                           </OverlayTrigger>
@@ -174,4 +174,4 @@ const ProductBDDManagement = () => {
   );
 };
 
-export default ProductBDDManagement;
+export default CatalogueProduit;

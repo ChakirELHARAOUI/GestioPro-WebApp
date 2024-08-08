@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique : false
     },
-    nombreCagette: {
+    nombreCaisse: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0

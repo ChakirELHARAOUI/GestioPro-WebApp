@@ -19,18 +19,36 @@ async function seedDatabase() {
       await UserService.createUser(user);
     }
 
-    // Créer des produits
+
+    // Créer des produits pour le catalogue
     const products = [
-      { name: 'Lait Collaimo 1L', prixVenteUnite: 10.5, fournisseur: 'Collaimo' },
-      { name: 'Yaourt Collaimo 500g', prixVenteUnite: 5.75, fournisseur: 'Collaimo' },
-      { name: 'Fromage Collaimo 250g', prixVenteUnite: 15.25, fournisseur: 'Collaimo' },
-      { name: 'Crème fraîche Collaimo 200ml', prixVenteUnite: 8.0, fournisseur: 'Collaimo' },
-      { name: 'Beurre Collaimo 250g', prixVenteUnite: 12.5, fournisseur: 'Collaimo' },
+      // Produits de Collaimo
+      { name: 'UHT 1L', prixVenteUnite: 5600, fournisseur: 'Collaimo' },
+      { name: 'UHT 1/2L', prixVenteUnite: 3050, fournisseur: 'Collaimo' },
+      { name: 'Lben 1/2L', prixVenteUnite: 740, fournisseur: 'Collaimo' },
+      { name: 'Beurre Collaimo 1K', prixVenteUnite: 8000, fournisseur: 'Collaimo' },
+
+      // Produits de Chergui
+      { name: 'RAIB PT /500', prixVenteUnite: 550, fournisseur: 'Chergui' },
+      { name: 'JUS CH / 1200', prixVenteUnite: 1200, fournisseur: 'Chergui' },
+      { name: 'DANON   72 CH', prixVenteUnite: 220, fournisseur: 'Chergui' },
+      { name: 'BRASSEE   72', prixVenteUnite: 270, fournisseur: 'Chergui' },
+
+      // Produits de Jawda
+      { name: 'PRLY  /280', prixVenteUnite: 280, fournisseur: 'Jawda' },
+      { name: 'GHILAL  72', prixVenteUnite: 360, fournisseur: 'Jawda' },
+      { name: 'TENDRE 72  /220 ', prixVenteUnite: 220, fournisseur: 'Jawda' },
+      { name: 'JUS   3000', prixVenteUnite: 3000, fournisseur: 'Jawda' },
+
+      // Produits du vendeur local d'œufs
+      { name: 'Œufs frais', prixVenteUnite: 3150, fournisseur: 'Oeufs' },
     ];
 
+    // Boucle pour créer chaque produit dans le catalogue
     for (const product of products) {
       await CatalogueProduitService.createCatalogueProduit(product);
     }
+
 
     // Créer des commandes globales
     const commandeGlobales = [

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const commandeSecteurController = require('../controllers/CommandeSecteurController');
 const { authMiddleware, managerOrAdminOnly } = require('../middleware/authMiddleware');
-const { ROLES } = require('../constantes');
 
 router.post('/', authMiddleware, managerOrAdminOnly, commandeSecteurController.createCommandeSecteur);
 router.get('/', authMiddleware, commandeSecteurController.getAllCommandeSecteurs);

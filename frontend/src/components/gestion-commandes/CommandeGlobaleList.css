@@ -1,0 +1,90 @@
+/* src/components/gestion-commandes/CommandeGlobaleList.css */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .commande-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .commande-card {
+    flex: 1 1 calc(33.333% - 20px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 300px;
+    max-height: 350px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .commande-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .commande-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .date {
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .etat.actif {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .etat.inactif {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .vendeurs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+  
+  .vendeur-badge {
+    background-color: #e0e0e0;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-size: 0.9em;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .role-manager {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .role-vendeur {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  @media (max-width: 768px) {
+    .commande-card {
+      flex: 1 1 100%;
+    }
+  }
+  

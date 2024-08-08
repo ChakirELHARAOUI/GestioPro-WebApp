@@ -1,14 +1,25 @@
 <!> Urgent & Important    
-    -> Creer une requete pour regrouper toutes les QuantiteProduit de tout les vendeurs
+    -> Rajouter dans (CatalogueProduit) l'attribut uniteParCaisse (QuantiteProduit) l'attribut nombreCaisse
+    -> Rajouter dans commandeSecteur le total Unite et total Caisse
+
 
 
 
 Gestion des commandes
+    § MANAGER
+        <>Globale
+            -> Modifier les informations d'une commandeGlobale (dateDepart/Vendeurs associées) [Frontend]
+            -> Trier les commandeGlobales par mois (changer le nom [Juin1, Juin2, Juin3])
+                {Avoir simplement les CG d'un mois}
+            
+        <>Secteur
+            -> Modifier les commandeSecteur d'une commandeGlobale [Frontend]
 
-    <>Secteur
-        -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier (Creer une fonction Soummission Vendeur different du CRUD pour le Manager| Elle fait exactement la meme chose que Update et chaque l etat en false)
-        -> Backend et Frontend
 
+            
+    § VENDEUR
+        <>Secteur 
+            -> Une fois qu'ils l'ont soumis, ils ne peuvent plus la modifier (Creer une fonction Soummission Vendeur different du CRUD pour le Manager| Elle fait exactement la meme chose que Update et met l etat en false)
 
 
 Gestion des Users
@@ -21,7 +32,7 @@ Dashbord
     -> Frontend Manager != Frontend Vendeur (Gestion Permissions)
 
 
-Gestion ProduitBDD
+Gestion CatalogueProduit
     -> (OPTIONNEL) Gérer la partie fournisseur dans la création d'un produitBDD ()
     (Il faut mettre une sorte de menu déroulant qui sont tirés d'une liste et une section om l'on peut ajouter un fournisseur à la liste)
     -> (OPTIONNEL) Que les produits du même fournisseur doivent être colorés de la même couleur

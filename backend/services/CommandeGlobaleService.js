@@ -78,7 +78,8 @@ const formatCommandeGlobaleOutput = async (commande) => {
     etat: commande.etat,
     users: users.map(user => ({
       id_User: user.id_User,
-      username: user.username
+      username: user.username,
+      role: user.role
     }))
   };
 };
@@ -116,7 +117,7 @@ exports.getAllCommandesEntreprise = async () => {
   const commandes = await CommandeGlobale.findAll({
     include: [{
       model: User,
-      attributes: ['id_User', 'username'],
+      attributes: ['id_User', 'username', 'role'],
       through: { attributes: [] }
     }]
   });
