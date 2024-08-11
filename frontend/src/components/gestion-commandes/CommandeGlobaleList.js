@@ -48,7 +48,7 @@ const CommandeGlobaleList = () => {
       )}
       <div className="commande-card-container">
         {commandeGlobales.map((commande) => (
-          <div className="commande-card mb-4" key={commande.idCommandeGlobal}>
+          <div className="commande-card mb-4" key={commande.idCommandeGlobale}>
             <div className="commande-card-body">
               <h5 className="card-title">Commande Globale #{commande.idCommandeGlobale}</h5>
               <p className="card-text">Date de départ: <span className="date">{commande.dateDepart}</span></p>

@@ -1,0 +1,207 @@
+.commande-details__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Titre de la page */
+.commande-details__title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Style de la carte principale contenant les détails de la commande */
+.commande-details__card {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.commande-details__card-body {
+  padding: 20px;
+}
+
+/* Organisation des éléments en ligne */
+.commande-details__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.commande-details__col--left {
+  text-align: left;  /* Aligner à gauche */
+  flex: 1;
+}
+
+.commande-details__col--right {
+  text-align: right;  /* Aligner à droite */
+  flex: 1;
+}
+
+
+/* Centrer les éléments sur une ligne */
+.commande-details__row--centered {
+  justify-content: center;
+}
+
+/* Définition des colonnes avec flex */
+.commande-details__col {
+  flex: 1;
+  margin-right: center;
+}
+
+/*.commande-details__col:last-child {
+  margin-right: 0;
+}*/
+
+/* Style des champs de formulaire (input et select) */
+.commande-details__input, .commande-details__select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Style de la date */
+.commande-details__date {
+  font-weight: bold;
+  color: #007bff;
+  font-size: 1.2em;
+}
+
+/* Style de l'état */
+.commande-details__etat {
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+/* Couleur de l'état actif */
+.commande-details__etat--actif {
+  color: green;
+}
+
+/* Couleur de l'état inactif */
+.commande-details__etat--inactif {
+  color: red;
+}
+
+/* Style des badges des utilisateurs */
+.commande-details__user-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Style général des badges */
+.commande-details__badge {
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  padding: 5px 15px;
+  font-size: 0.9em;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge pour le manager */
+.commande-details__badge--manager {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Badge pour le vendeur */
+.commande-details__badge--vendeur {
+  background-color: #ffc107;
+  color: black;
+}
+
+/* Table responsive */
+.commande-details__table-responsive {
+  overflow-x: auto;
+}
+
+/* Style général de la table */
+.commande-details__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center; /* Centrage du contenu */
+}
+
+/* Style des cellules de la table */
+.commande-details__table th,
+.commande-details__table td {
+  padding: 10px;
+  text-align: center; /* Centrage des cellules */
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style du total avec une couleur différente */
+.commande-details__total {
+  color: #ff6347; /* Couleur différente pour le total */
+  font-weight: bold;
+}
+
+/* Actions de la commande */
+.commande-details__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+/* Style des boutons */
+.commande-details__btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Bouton secondaire */
+.commande-details__btn--secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Bouton principal */
+.commande-details__btn--primary {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Hover du bouton secondaire */
+.commande-details__btn--secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Hover du bouton principal */
+.commande-details__btn--primary:hover {
+  background-color: #0056b3;
+}
+
+/* Indicateur de chargement */
+.commande-details__loading {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+  color: #888;
+}
+
+/* Style spécifique pour les champs de quantité */
+.commande-details__input-quantity {
+  width: 50px;
+  padding: 5px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

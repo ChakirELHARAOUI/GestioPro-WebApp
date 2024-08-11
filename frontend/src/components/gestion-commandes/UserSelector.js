@@ -36,9 +36,9 @@ const UserSelector = ({ selectedUsers, setSelectedUsers }) => {
       <div className="user-list">
         {users.map(user => (
           <div
-            key={user.id_User}  // Utilise user.id_User comme clé unique
+            key={user.id_User}
             className={`user-oval ${selectedUsers.includes(user.id_User) ? 'selected' : ''}`}
-            onClick={() => toggleUserSelection(user.id_User)}  // Passe user.id_User ici
+            onClick={() => toggleUserSelection(user.id_User)}
           >
             {user.username}
           </div>
