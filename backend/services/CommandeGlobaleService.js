@@ -1,5 +1,6 @@
 const { CommandeGlobale, CommandeSecteur, User, QuantiteProduit, CatalogueProduit, StockSecteur, sequelize } = require('../database/index');
 const moment = require('moment');
+const CommandeSecteurService = require('./CommandeSecteurService');
 
 // Fonctions auxiliaires
 
@@ -171,7 +172,7 @@ exports.getCommandeGlobaleById = async (id) => {
   return commandeGlobale;
 };
 
-exports.updateCommandeGlobale = async (id, updateData, userIds) => {
+exports.updateCommandeGlobale = async (id, updateData, userIds, quantiteProduits) => {
   const transaction = await sequelize.transaction();
   try {
     const commande = await findCommandeGlobaleById(id);
@@ -190,6 +191,18 @@ exports.updateCommandeGlobale = async (id, updateData, userIds) => {
       await associateNewUsersAndInitializeCommandeSecteurs(commande, userIds, transaction);
     }
 
+    // Mettre à jour les produits pour chaque commande secteur
+    for (const userId of userIds) {
+      const commandeSecteur = await CommandeSecteur.findOne({
+        where: { id_User: userId, idCommandeGlobale: id },
+        transaction
+      });
+
+      if (commandeSecteur) {
+        await CommandeSecteurService.updateQuantiteProduitsForSecteur(commandeSecteur.idCommandeSecteur, quantiteProduits[userId], transaction);
+      }
+    }
+
     await transaction.commit();
     return await formatCommandeGlobaleOutput(commande);
   } catch (error) {
@@ -198,6 +211,8 @@ exports.updateCommandeGlobale = async (id, updateData, userIds) => {
     throw error;
   }
 };
+
+
 
 exports.deleteCommandeGlobale = async (id) => {
   try {

@@ -5,6 +5,18 @@ import { getAllUsers } from '../../api/userApi';
 import UserSelector from './UserSelector';
 import './CommandeGlobaleDetails.css';
 
+// Fonction utilitaire pour formater la date en JJ/MM/AAAA
+const formatDateToDisplay = (dateString) => {
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+};
+
+// Fonction utilitaire pour formater la date en AAAA-MM-JJ (format input)
+const formatDateForInput = (dateString) => {
+  const [day, month, year] = dateString.split('/');
+  return `${year}-${month}-${day}`;
+};
+
 const CommandeGlobaleDetails = () => {
   const { id } = useParams();
   const [commandeGlobale, setCommandeGlobale] = useState(null);
@@ -13,54 +25,68 @@ const CommandeGlobaleDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [users, setUsers] = useState([]);
 
-  // État pour stocker les données initiales
-  const [initialData, setInitialData] = useState(null);
+  // Fonction pour charger les données de commande globale
+  const fetchCommandeGlobale = async () => {
+    try {
+      const commandeResponse = await getCommandeGlobale(id);
+      setCommandeGlobale(commandeResponse.data);
+      setSelectedUsers(commandeResponse.data.users.map(user => user.id_User));
+    } catch (error) {
+      console.error('Error fetching commande globale:', error);
+    }
+  };
+
+  // Fonction pour charger les quantités de produits
+  const fetchQuantiteProduits = async () => {
+    try {
+      const quantiteResponse = await getQuantiteProduitsForCommandeGlobale(id);
+      setQuantiteProduits(quantiteResponse.data);
+    } catch (error) {
+      console.error('Error fetching quantite produits:', error);
+    }
+  };
+
+  // Fonction pour charger les utilisateurs
+  const fetchUsers = async () => {
+    try {
+      const usersResponse = await getAllUsers();
+      setUsers(usersResponse.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [commandeResponse, quantiteResponse, usersResponse] = await Promise.all([
-          getCommandeGlobale(id),
-          getQuantiteProduitsForCommandeGlobale(id),
-          getAllUsers()
-        ]);
-        
-        setCommandeGlobale(commandeResponse.data);
-        setQuantiteProduits(quantiteResponse.data);
-        setUsers(usersResponse.data);
-        setSelectedUsers(commandeResponse.data.users.map(user => user.id_User));
-
-        // Enregistrer les données initiales
-        setInitialData({
-          ...commandeResponse.data,
-          quantiteProduits: [...quantiteResponse.data],
-          selectedUsers: commandeResponse.data.users.map(user => user.id_User)
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    fetchCommandeGlobale();
+    fetchQuantiteProduits();
+    fetchUsers();
   }, [id]);
 
   const handleUpdate = async () => {
     try {
+      // Préparation des données à envoyer
       const data = {
         userIds: selectedUsers,
         dateDepart: commandeGlobale.dateDepart,
         etat: commandeGlobale.etat,
-        quantiteProduits: quantiteProduits // Ajout pour mise à jour des quantités
+        quantiteProduits: selectedUsers.reduce((acc, userId) => {
+          acc[userId] = quantiteProduits.map(produit => ({
+            id_catalogueProduit: produit.id_catalogueProduit,
+            quantite: produit.vendeurs[users.find(user => user.id_User === userId).username] || 0
+          }));
+          return acc;
+        }, {})
       };
+  
+      // Envoi de la requête au serveur
       await updateCommandeGlobale(id, data);
       alert('Commande globale mise à jour avec succès!');
-      const updatedUsers = selectedUsers.map(id => users.find(user => user.id_User === id));
-      setCommandeGlobale({ ...commandeGlobale, users: updatedUsers });
       setIsEditing(false);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la commande globale:', error);
     }
   };
+  
 
   const handleQuantiteChange = (produitIndex, userId, newQuantite) => {
     const newQuantiteProduits = [...quantiteProduits];
@@ -70,12 +96,8 @@ const CommandeGlobaleDetails = () => {
   };
 
   const handleCancelEdit = () => {
-    // Rétablir les valeurs initiales
-    if (initialData) {
-      setCommandeGlobale(initialData);
-      setQuantiteProduits(initialData.quantiteProduits);
-      setSelectedUsers(initialData.selectedUsers);
-    }
+    // Recharger uniquement les quantités de produits
+    fetchQuantiteProduits();
     setIsEditing(false);
   };
 
@@ -94,8 +116,8 @@ const CommandeGlobaleDetails = () => {
                 <input
                   type="date"
                   className="commande-details__input"
-                  value={commandeGlobale.dateDepart}
-                  onChange={(e) => setCommandeGlobale({ ...commandeGlobale, dateDepart: e.target.value })}
+                  value={formatDateForInput(commandeGlobale.dateDepart)}
+                  onChange={(e) => setCommandeGlobale({ ...commandeGlobale, dateDepart: formatDateToDisplay(e.target.value) })}
                 />
               ) : (
                 <p className="commande-details__date">{commandeGlobale.dateDepart}</p>
@@ -121,7 +143,7 @@ const CommandeGlobaleDetails = () => {
         </div>
       </div>
 
-      <h3 className="commande-details__section-title">Vendeurs Associés</h3>
+      <h3 className="commande-details__section-title">Utilisateurs Associés à cette Commande Globale</h3>
       <div className="commande-details__card">
         <div className="commande-details__card-body commande-details__card-body--centered">
           {isEditing ? (
@@ -138,7 +160,7 @@ const CommandeGlobaleDetails = () => {
         </div>
       </div>
 
-      <h3 className="commande-details__section-title">Quantité de Produits par Vendeur</h3>
+      <h3 className="commande-details__section-title">Quantité de Produits par Utilisateurs</h3>
       <div className="commande-details__table-responsive">
         <table className="commande-details__table">
           <thead>
@@ -177,18 +199,19 @@ const CommandeGlobaleDetails = () => {
       </div>
 
       <div className="commande-details__actions">
-        <button onClick={() => setIsEditing(!isEditing)} className="commande-details__btn commande-details__btn--secondary">
-          {isEditing ? 'Annuler' : 'Modifier'}
-        </button>
-        {isEditing && (
+        {isEditing ? (
           <>
             <button onClick={handleUpdate} className="commande-details__btn commande-details__btn--primary">
               Enregistrer
             </button>
             <button onClick={handleCancelEdit} className="commande-details__btn commande-details__btn--secondary">
-              Rétablir
+              Annuler
             </button>
           </>
+        ) : (
+          <button onClick={() => setIsEditing(true)} className="commande-details__btn commande-details__btn--secondary">
+            Modifier
+          </button>
         )}
       </div>
     </div>

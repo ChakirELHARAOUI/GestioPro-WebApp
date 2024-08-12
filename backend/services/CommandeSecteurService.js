@@ -53,6 +53,39 @@ class CommandeSecteurService {
     }
   }
 
+  // Ajoutez cette fonction dans votre service CommandeSecteurService
+static async updateQuantiteProduitsForSecteur(commandeSecteurId, quantiteProduits, transaction) {
+  const existingQuantiteProduits = await QuantiteProduit.findAll({
+    where: { idCommandeSecteur: commandeSecteurId },
+    transaction
+  });
+
+  const existingQuantiteProduitsMap = new Map(
+    existingQuantiteProduits.map(qp => [qp.id_catalogueProduit, qp])
+  );
+
+  for (const qp of quantiteProduits) {
+    const existingQP = existingQuantiteProduitsMap.get(qp.id_catalogueProduit);
+
+    if (existingQP) {
+      if (existingQP.quantite !== qp.quantite) {
+        await existingQP.update({ quantite: qp.quantite }, { transaction });
+      }
+      existingQuantiteProduitsMap.delete(qp.id_catalogueProduit);
+    } else {
+      await QuantiteProduit.create({
+        ...qp,
+        idCommandeSecteur: commandeSecteurId
+      }, { transaction });
+    }
+  }
+
+  for (const [, qpToDelete] of existingQuantiteProduitsMap) {
+    await qpToDelete.destroy({ transaction });
+  }
+}
+
+
   static async deleteCommandeSecteur(id) {
     const transaction = await sequelize.transaction();
     try {
