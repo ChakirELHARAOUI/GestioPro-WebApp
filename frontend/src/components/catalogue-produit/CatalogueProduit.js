@@ -40,10 +40,10 @@ const CatalogueProduit = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id_produitBDD) => {
+  const handleDelete = async (id_catalogueProduit) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
       try {
-        await deleteProduct(id_produitBDD);
+        await deleteProduct(id_catalogueProduit);
         fetchProducts();
       } catch (err) {
         setError('Erreur lors de la suppression du produit');
@@ -54,8 +54,9 @@ const CatalogueProduit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (currentProduct.id_produitBDD) {
-        await updateProduct(currentProduct.id_produitBDD, currentProduct);
+      console.log("currentProduct.id_catalogueProduit = ", currentProduct.id_catalogueProduit);
+      if (currentProduct.id_catalogueProduit) {
+        await updateProduct(currentProduct.id_catalogueProduit, currentProduct);
       } else {
         await createProduct(currentProduct);
       }
@@ -132,7 +133,7 @@ const CatalogueProduit = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentProduct.id_produitBDD ? 'Modifier' : 'Créer'} un produit</Modal.Title>
+          <Modal.Title>{currentProduct.id_catalogueProduit ? 'Modifier' : 'Créer'} un produit</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>

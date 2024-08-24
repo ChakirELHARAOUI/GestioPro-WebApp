@@ -1,47 +1,45 @@
 // backend/seedDatabase.js
-const { sequelize, User, CatalogueProduit, CommandeGlobale, CommandeSecteur, QuantiteProduit } = require('./database/index');
+//const { sequelize, User, CatalogueProduit, CommandeGlobale, CommandeSecteur, QuantiteProduit } = require('./database/index');
 const UserService = require('./services/UserService');
 const CatalogueProduitService = require('./services/CatalogueProduitService');
 const CommandeGlobaleService = require('./services/CommandeGlobaleService');
-
 
 async function seedDatabase() {
   try {
     // Créer des utilisateurs
     const users = [
-      { username: 'admin',      sector:'default',   password: 'test', role: 1 },
-      { username: 'manager',    sector:'default',   password: 'test', role: 1 },
-      { username: 'vendeur1',   sector:'default',   password: 'test', role: 0 },
-      { username: 'vendeur2',   sector:'default',   password: 'test', role: 0 },
+      { username: 'Admin 1',    sector:'default', password: 'test', role: 1 },
+      { username: 'Manager 1',  sector:'default', password: 'test', role: 1 },
+      { username: 'Vendeur 1',  sector:'default', password: 'test', role: 0 },
+      { username: 'Vendeur 2',  sector:'default', password: 'test', role: 0 },
     ];
 
     for (const user of users) {
       await UserService.createUser(user);
     }
 
-
     // Créer des produits pour le catalogue
     const products = [
-      // Produits de Collaimo
-      { name: 'UHT 1L', prixVenteUnite: 5600, fournisseur: 'Collaimo' },
-      { name: 'UHT 1/2L', prixVenteUnite: 3050, fournisseur: 'Collaimo' },
-      { name: 'Lben 1/2L', prixVenteUnite: 740, fournisseur: 'Collaimo' },
-      { name: 'Beurre Collaimo 1K', prixVenteUnite: 8000, fournisseur: 'Collaimo' },
+      // Produits du Fournisseur A
+      { name: 'Produit A1', prixVenteUnite: 5600, fournisseur: 'Fournisseur A' },
+      { name: 'Produit A2', prixVenteUnite: 3050, fournisseur: 'Fournisseur A' },
+      { name: 'Produit A3', prixVenteUnite: 740,  fournisseur: 'Fournisseur A' },
+      { name: 'Produit A4', prixVenteUnite: 8000, fournisseur: 'Fournisseur A' },
 
-      // Produits de Chergui
-      { name: 'RAIB PT /500', prixVenteUnite: 550, fournisseur: 'Chergui' },
-      { name: 'JUS CH / 1200', prixVenteUnite: 1200, fournisseur: 'Chergui' },
-      { name: 'DANON   72 CH', prixVenteUnite: 220, fournisseur: 'Chergui' },
-      { name: 'BRASSEE   72', prixVenteUnite: 270, fournisseur: 'Chergui' },
+      // Produits du Fournisseur B
+      { name: 'Produit B1', prixVenteUnite: 550,  fournisseur: 'Fournisseur B' },
+      { name: 'Produit B2', prixVenteUnite: 1200, fournisseur: 'Fournisseur B' },
+      { name: 'Produit B3', prixVenteUnite: 220,  fournisseur: 'Fournisseur B' },
+      { name: 'Produit B4', prixVenteUnite: 270,  fournisseur: 'Fournisseur B' },
 
-      // Produits de Jawda
-      { name: 'PRLY  /280', prixVenteUnite: 280, fournisseur: 'Jawda' },
-      { name: 'GHILAL  72', prixVenteUnite: 360, fournisseur: 'Jawda' },
-      { name: 'TENDRE 72  /220 ', prixVenteUnite: 220, fournisseur: 'Jawda' },
-      { name: 'JUS   3000', prixVenteUnite: 3000, fournisseur: 'Jawda' },
+      // Produits du Fournisseur C
+      { name: 'Produit C1', prixVenteUnite: 280,  fournisseur: 'Fournisseur C' },
+      { name: 'Produit C2', prixVenteUnite: 360,  fournisseur: 'Fournisseur C' },
+      { name: 'Produit C3', prixVenteUnite: 220,  fournisseur: 'Fournisseur C' },
+      { name: 'Produit C4', prixVenteUnite: 3000, fournisseur: 'Fournisseur C' },
 
-      // Produits du vendeur local d'œufs
-      { name: 'Œufs frais', prixVenteUnite: 3150, fournisseur: 'Oeufs' },
+      // Produits du Fournisseur D
+      { name: 'Produit D1', prixVenteUnite: 3150, fournisseur: 'Fournisseur D' },
     ];
 
     // Boucle pour créer chaque produit dans le catalogue
@@ -49,12 +47,11 @@ async function seedDatabase() {
       await CatalogueProduitService.createCatalogueProduit(product);
     }
 
-
     // Créer des commandes globales
     const commandeGlobales = [
-      { dateDepart: '15/08/2024', etat: true },
-      { dateDepart: '22/08/2024', etat: true },
-      { dateDepart: '29/08/2024', etat: false },
+      { dateDepart: '24/08/2024', etat: false },
+      { dateDepart: '25/08/2024', etat: false },
+      { dateDepart: '29/08/2024', etat: true },
     ];
 
     for (const commande of commandeGlobales) {

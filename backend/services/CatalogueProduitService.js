@@ -64,8 +64,9 @@ class CatalogueProduitService {
     const existingProduct = await CatalogueProduit.findOne({
       where: { name: productData.name}
     });
-    console.log(existingProduct);
-    if (existingProduct && existingProduct.id_produitBDD !== id_produitBDD) {
+    console.log("existingProduct = ", existingProduct.id_catalogueProduit);
+
+    if ((existingProduct) && (existingProduct.id_catalogueProduit !== id_produitBDD)) {
       throw new Error('This product already exists');
     }
     

@@ -191,6 +191,7 @@ exports.updateCommandeGlobale = async (id, updateData, userIds, quantiteProduits
       await associateNewUsersAndInitializeCommandeSecteurs(commande, userIds, transaction);
     }
 
+    /*
     // Mettre à jour les produits pour chaque commande secteur
     for (const userId of userIds) {
       const commandeSecteur = await CommandeSecteur.findOne({
@@ -202,7 +203,7 @@ exports.updateCommandeGlobale = async (id, updateData, userIds, quantiteProduits
         await CommandeSecteurService.updateQuantiteProduitsForSecteur(commandeSecteur.idCommandeSecteur, quantiteProduits[userId], transaction);
       }
     }
-
+*/
     await transaction.commit();
     return await formatCommandeGlobaleOutput(commande);
   } catch (error) {
@@ -211,7 +212,6 @@ exports.updateCommandeGlobale = async (id, updateData, userIds, quantiteProduits
     throw error;
   }
 };
-
 
 
 exports.deleteCommandeGlobale = async (id) => {
