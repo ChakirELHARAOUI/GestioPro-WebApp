@@ -62,7 +62,7 @@ Les contributions sont les bienvenues ! Pour contribuer :
 2. **Clonez votre fork localement :**
 
     ```bash
-    git clone https://github.com/votre-utilisateur/frais-trans.git
+    git clone https://github.com/ChakirELHARAOUI/GestioPro-WebApp
     cd frais-trans
     ```
 

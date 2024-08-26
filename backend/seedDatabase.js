@@ -49,9 +49,9 @@ async function seedDatabase() {
 
     // Créer des commandes globales
     const commandeGlobales = [
-      { dateDepart: '24/08/2024', etat: false },
-      { dateDepart: '25/08/2024', etat: false },
-      { dateDepart: '29/08/2024', etat: true },
+      { dateDepart: '27/08/2024', etat: false },
+      { dateDepart: '28/08/2024', etat: false },
+      { dateDepart: '30/08/2024', etat: true },
     ];
 
     for (const commande of commandeGlobales) {
