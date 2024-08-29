@@ -57,16 +57,16 @@ class CatalogueProduitService {
 
   async updateCatalogueProduit(productData) {
     const { id_produitBDD, name, fournisseur, prixVenteUnite } = productData;
-    
+
     const product = await CatalogueProduit.findByPk(id_produitBDD);
+
     if (!product) throw new Error('Product not found');
 
     const existingProduct = await CatalogueProduit.findOne({
       where: { name: productData.name}
     });
-    console.log("existingProduct = ", existingProduct.id_catalogueProduit);
 
-    if ((existingProduct) && (existingProduct.id_catalogueProduit !== id_produitBDD)) {
+    if ((existingProduct) && (existingProduct.id_catalogueProduit != id_produitBDD)) {
       throw new Error('This product already exists');
     }
     
